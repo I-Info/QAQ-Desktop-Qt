@@ -12,12 +12,16 @@ class SocketService : public QObject
 public:
     explicit SocketService(QObject *parent = nullptr);
     ~SocketService();
-    void startSocket(const QString& ip, const int& port);
+    void setSocket(const QString& ip, const int& port);
     void stopSocket();
 
 signals:
-    void error();
+    void error(QString msg);
+    void connStatus();
     void remoteMsg();
+
+public slots:
+    void socketConnect();
 
 
 private slots:
@@ -29,10 +33,10 @@ private slots:
 private:
     QTcpSocket *tcpSocket;
     bool isConnected;
-    bool isThreadStoped;
+    bool isErrorOccurred;
     QString serverIp;
     int serverPort;
-    void run();
+
 
 };
 

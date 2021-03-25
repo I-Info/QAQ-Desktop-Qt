@@ -3,7 +3,8 @@
 SocketService::SocketService(QObject *parent) : QObject(parent)
 {
     isConnected = false;
-    isThreadStoped = false;
+    serverIp = "0.0.0.0";
+    serverPort = 8080;
 }
 
 SocketService::~SocketService()
@@ -11,33 +12,50 @@ SocketService::~SocketService()
     delete tcpSocket;
 }
 
-void SocketService::startSocket(const QString &ip, const int &port)
+void SocketService::setSocket(const QString &ip, const int &port)
 {
     this->serverIp = ip;
     this->serverPort = port;
     tcpSocket = new QTcpSocket();
     isConnected = false;
-    isThreadStoped = false;
+    isErrorOccurred = false;
     //Link
     connect(tcpSocket,SIGNAL(connected()),this,SLOT(onConnected()));
-    connect(tcpSocket,SIGNAL(disConnected()),this,SLOT(onDisconnected()));
+    connect(tcpSocket,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(onReadMsg()));
-    run();
 }
 
 void SocketService::stopSocket()
 {
     tcpSocket->disconnectFromHost();
+    tcpSocket->deleteLater();
 }
 
-void SocketService::run()
+
+
+void SocketService::onConnected()
 {
-    while (!isThreadStoped) {
-        if (!isConnected) {
-            tcpSocket->connectToHost(this->serverIp,this->serverPort);
-            isConnected = tcpSocket->waitForConnected();
 
-        }
+}
 
+void SocketService::onDisconnected()
+{
+
+}
+
+void SocketService::onReadMsg()
+{
+
+}
+
+
+
+void SocketService::socketConnect()
+{
+    int tryTimes = 0;
+    while (!isConnected && !isErrorOccurred && tryTimes < 3) {
+        tcpSocket->connectToHost(this->serverIp,this->serverPort);
+        isConnected = tcpSocket->waitForConnected();
+        tryTimes++;
     }
 }

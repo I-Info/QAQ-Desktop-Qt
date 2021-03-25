@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
-#include <QTcpSocket>
+#include <QThread>
+#include "socketservice.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -16,6 +17,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void startSocket();
+
 private slots:
     void on_connectionButton_clicked();
 
@@ -25,9 +29,9 @@ private:
     QString serverIp;
     qint16 serverPort;
     QString userName;
+    SocketService *mainService;
+    QThread serviceThread;
     void errorBox(QString title = "Error!", QString text = "Please check the info you have inputed.");
-    void socketConnect();
-    void socketDisConnect();
-    QTcpSocket *defaultSocket;
+
 };
 #endif // MAINWINDOW_H

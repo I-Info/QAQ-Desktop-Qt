@@ -12,12 +12,14 @@ MainWindow::MainWindow(QWidget *parent)
     serverPort = 8081;
     userName = "QQ";
     ui->statusbar->addPermanentWidget(new QLabel("Thank you for using QAQ"));
-    defaultSocket = new QTcpSocket;
+    mainService = new SocketService();
+    mainService->moveToThread(&serviceThread);
+    connect(this,&MainWindow::startSocket,mainService,&SocketService::socketConnect);
+    serviceThread.start();
 }
 
 MainWindow::~MainWindow()
 {
-    delete defaultSocket;
     delete ui;
 }
 
@@ -37,12 +39,12 @@ void MainWindow::on_connectionButton_clicked()
                 QRegularExpression regExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
                 QRegularExpressionMatch match = regExp.match(tempServerIp);
                 if (match.hasMatch() && tempServerPort >0 && tempServerPort <= 65535) {
-                    qDebug() << "pass";
                     serverIp = tempServerIp;
                     serverPort = tempServerPort;
                     //connect
-                    socketConnect();
+                    mainService->setSocket(serverIp, serverPort);
 
+                    emit startSocket();
 
                 } else {
                     errorBox();
@@ -59,7 +61,7 @@ void MainWindow::on_connectionButton_clicked()
     }
     else {
         //disconnect
-        socketDisConnect();
+
     }
 }
 
@@ -72,29 +74,5 @@ void MainWindow::errorBox(QString title, QString text)
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Critical);
     msgBox.exec();
-}
-
-void MainWindow::socketConnect()
-{
-       defaultSocket->connectToHost(serverIp,serverPort);
-       if (!defaultSocket->waitForConnected()) {
-           errorBox("Socket connect failed", "Connect time out");
-           return;
-       }
-       ui->serverInfo->setEnabled(false);
-       ui->userInfo->setEnabled(false);
-       ui->connectionButton->setText("disconnect");
-}
-
-void MainWindow::socketDisConnect()
-{
-    defaultSocket->disconnectFromHost();
-    if (!defaultSocket->waitForDisconnected()) {
-        errorBox("Failed","Disconnect failed, please try again later.");
-        return;
-    }
-    ui->serverInfo->setEnabled(true);
-    ui->userInfo->setEnabled(true);
-    ui->connectionButton->setText("connect");
 }
 
