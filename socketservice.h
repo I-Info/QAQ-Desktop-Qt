@@ -13,15 +13,15 @@ public:
     explicit SocketService(QObject *parent = nullptr);
     ~SocketService();
     void setSocket(const QString& ip, const int& port);
-    void stopSocket();
 
 signals:
-    void error(QString msg);
-    void connStatus();
-    void remoteMsg();
+    void error(int errCode);
+    void connStatus(QString);
+    void remoteMsg(QString);
 
 public slots:
     void socketConnect();
+    void socketDisConn();
 
 
 private slots:

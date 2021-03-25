@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QThread>
+#include <QLabel>
 #include "socketservice.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +23,7 @@ signals:
 
 private slots:
     void on_connectionButton_clicked();
+    void onGetStatus(QString);
 
 private:
     Ui::MainWindow *ui;
@@ -31,6 +33,7 @@ private:
     QString userName;
     SocketService *mainService;
     QThread serviceThread;
+    QLabel *statusBar;
     void errorBox(QString title = "Error!", QString text = "Please check the info you have inputed.");
 
 };

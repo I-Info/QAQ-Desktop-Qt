@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QLabel>
-#include <QTcpSocket>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -11,15 +9,19 @@ MainWindow::MainWindow(QWidget *parent)
     serverIp = "127.0.0.1";
     serverPort = 8081;
     userName = "QQ";
-    ui->statusbar->addPermanentWidget(new QLabel("Thank you for using QAQ"));
+    statusBar = new QLabel("Thank you for using QAQ");
+    ui->statusbar->addPermanentWidget(statusBar);
     mainService = new SocketService();
     mainService->moveToThread(&serviceThread);
     connect(this,&MainWindow::startSocket,mainService,&SocketService::socketConnect);
+    connect(mainService,&SocketService::connStatus,this,&MainWindow::onGetStatus);
     serviceThread.start();
 }
 
 MainWindow::~MainWindow()
 {
+    delete mainService;
+    delete statusBar;
     delete ui;
 }
 
@@ -42,8 +44,7 @@ void MainWindow::on_connectionButton_clicked()
                     serverIp = tempServerIp;
                     serverPort = tempServerPort;
                     //connect
-                    mainService->setSocket(serverIp, serverPort);
-
+                    //mainService->setSocket(serverIp, serverPort);
                     emit startSocket();
 
                 } else {
@@ -62,7 +63,13 @@ void MainWindow::on_connectionButton_clicked()
     else {
         //disconnect
 
+
     }
+}
+
+void MainWindow::onGetStatus(QString status)
+{
+    statusBar->setText(status);
 }
 
 void MainWindow::errorBox(QString title, QString text)
