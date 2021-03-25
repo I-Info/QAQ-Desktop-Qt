@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QLabel>
+#include <QTcpSocket>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -11,10 +12,12 @@ MainWindow::MainWindow(QWidget *parent)
     serverPort = 8081;
     userName = "QQ";
     ui->statusbar->addPermanentWidget(new QLabel("Thank you for using QAQ"));
+    defaultSocket = new QTcpSocket;
 }
 
 MainWindow::~MainWindow()
 {
+    delete defaultSocket;
     delete ui;
 }
 
@@ -38,10 +41,9 @@ void MainWindow::on_connectionButton_clicked()
                     serverIp = tempServerIp;
                     serverPort = tempServerPort;
                     //connect
+                    socketConnect();
 
-                    line1->setEnabled(false);
-                    line2->setEnabled(false);
-                    ui->connectionButton->setText("disconnect");
+
                 } else {
                     errorBox();
                 }
@@ -57,11 +59,7 @@ void MainWindow::on_connectionButton_clicked()
     }
     else {
         //disconnect
-
-        line1->setEnabled(true);
-        line2->setEnabled(true);
-        ui->connectionButton->setText("connect");
-
+        socketDisConnect();
     }
 }
 
@@ -75,3 +73,28 @@ void MainWindow::errorBox(QString title, QString text)
     msgBox.setIcon(QMessageBox::Critical);
     msgBox.exec();
 }
+
+void MainWindow::socketConnect()
+{
+       defaultSocket->connectToHost(serverIp,serverPort);
+       if (!defaultSocket->waitForConnected()) {
+           errorBox("Socket connect failed", "Connect time out");
+           return;
+       }
+       ui->serverInfo->setEnabled(false);
+       ui->userInfo->setEnabled(false);
+       ui->connectionButton->setText("disconnect");
+}
+
+void MainWindow::socketDisConnect()
+{
+    defaultSocket->disconnectFromHost();
+    if (!defaultSocket->waitForDisconnected()) {
+        errorBox("Failed","Disconnect failed, please try again later.");
+        return;
+    }
+    ui->serverInfo->setEnabled(true);
+    ui->userInfo->setEnabled(true);
+    ui->connectionButton->setText("connect");
+}
+
