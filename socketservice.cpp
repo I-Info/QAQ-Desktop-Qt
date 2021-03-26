@@ -2,15 +2,17 @@
 #include <QThread>
 SocketService::SocketService(QObject *parent) : QObject(parent)
 {
+    tcpSocket = nullptr;
     isConnected = false;
     serverIp = "0.0.0.0";
     serverPort = 8080;
-
 }
 
 SocketService::~SocketService()
 {
-    delete tcpSocket;
+    if (tcpSocket) {
+        delete tcpSocket;
+    }
 }
 
 void SocketService::setSocket(const QString &ip, const int &port)

@@ -6,7 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    serverIp = "127.0.0.1";
+
+    serverIp = "0.0.0.0";
     serverPort = 8081;
     userName = "QQ";
 
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar = new QLabel("Thank you for using QAQ");
     ui->statusbar->addPermanentWidget(statusBar);
 
+    //Initialize main socket service
     mainService = new SocketService();
     mainService->moveToThread(&serviceThread);
     connect(this,&MainWindow::setSocket,mainService,&SocketService::setSocket);
