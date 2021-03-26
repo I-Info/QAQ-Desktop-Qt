@@ -22,12 +22,17 @@ signals:
     void startSocket();
     void stopSocket();
     void setSocket(const QString&, const int&);
+    void sendMsg(QString);
 
 private slots:
     void on_connectionButton_clicked();
+    void on_sendButton_clicked();
     void onGetStatus(QString);
     void onConnnected();
     void onDisConned();
+    void onRecvedMsg(QString);
+    void onErrorOccurred(int);
+
 
 private:
     Ui::MainWindow *ui;

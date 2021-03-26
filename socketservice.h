@@ -14,21 +14,22 @@ public:
     ~SocketService();
 
 signals:
-    void error(int errCode);
+    void error(int);
     void connStatus(QString);
     void connected();
     void disConnected();
-    void remoteMsg(QString);
+    void recvedMsg(QString);
 
 public slots:
     void socketConnect();
     void socketDisConn();
     void setSocket(const QString& ip, const int& port);
+    void sendMsg(QString);
 
 
 private slots:
     void onDisconnected();
-    void onReadMsg();
+    void ReadMsg();
 
 
 private:

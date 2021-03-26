@@ -26,9 +26,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this,&MainWindow::setSocket,mainService,&SocketService::setSocket);
     connect(this,&MainWindow::startSocket,mainService,&SocketService::socketConnect);
     connect(this,&MainWindow::stopSocket,mainService,&SocketService::socketDisConn);
+    connect(this,&MainWindow::sendMsg,mainService,&SocketService::sendMsg);
     connect(mainService,&SocketService::connStatus,this,&MainWindow::onGetStatus);
     connect(mainService,&SocketService::connected,this,&MainWindow::onConnnected);
     connect(mainService,&SocketService::disConnected,this,&MainWindow::onDisConned);
+    connect(mainService,&SocketService::recvedMsg,this,&MainWindow::onRecvedMsg);
+    connect(mainService,&SocketService::error,this,&MainWindow::onErrorOccurred);
     serviceThread.start();
 }
 
@@ -102,6 +105,23 @@ void MainWindow::onDisConned()
     ui->connectionButton->setText("connect");
 }
 
+void MainWindow::onRecvedMsg(QString recvMsg)
+{
+    QString messages = ui->textBox->toPlainText();
+    messages = messages + recvMsg + "\n";
+    ui->textBox->setText(messages);
+}
+
+void MainWindow::onErrorOccurred(int code)
+{
+    if (code == 1) {
+        //get message error
+        errorBox("Network error","Get remote message failed, cheack your network connection.");
+        return;
+    }
+
+}
+
 void MainWindow::errorBox(QString title, QString text)
 {
     msgBox.setWindowTitle(title);
@@ -113,3 +133,8 @@ void MainWindow::errorBox(QString title, QString text)
     msgBox.exec();
 }
 
+
+void MainWindow::on_sendButton_clicked()
+{
+
+}
