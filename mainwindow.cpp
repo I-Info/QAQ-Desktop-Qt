@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     //Initialize main socket service
     mainService = new SocketService();
     mainService->moveToThread(&serviceThread);
+
     connect(this,&MainWindow::setSocket,mainService,&SocketService::setSocket);
     connect(this,&MainWindow::startSocket,mainService,&SocketService::socketConnect);
     connect(this,&MainWindow::stopSocket,mainService,&SocketService::socketDisConn);
@@ -32,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mainService,&SocketService::disConnected,this,&MainWindow::onDisConned);
     connect(mainService,&SocketService::recvedMsg,this,&MainWindow::onRecvedMsg);
     connect(mainService,&SocketService::error,this,&MainWindow::onErrorOccurred);
+
     serviceThread.start();
 }
 
@@ -130,11 +133,34 @@ void MainWindow::errorBox(QString title, QString text)
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.setIcon(QMessageBox::Critical);
-    msgBox.exec();
+    msgBox.open();//void block thread.
 }
 
 
 void MainWindow::on_sendButton_clicked()
 {
+    QString message = ui->lineEdit->text();
+    if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
+        if (message.length() < 450) {
+            emit sendMsg(message);
+            ui->lineEdit->setText("");
+        } else {
+            errorBox("Error", "the message is too long.");
+        }
+    }
+    else if (ui->serverInfo->isEnabled()) {
+        errorBox("Error", "Sorry, you can't send message before you connect to remote server");
+        ui->lineEdit->setText(NULL);
+    }
+    return;
+}
 
+void MainWindow::on_action_QAQ_triggered()
+{
+
+}
+
+void MainWindow::on_lineEdit_returnPressed()
+{
+    on_sendButton_clicked();
 }

@@ -30,7 +30,7 @@ void SocketService::setSocket(const QString &ip, const int &port)
     connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(ReadMsg()));
 }
 
-void SocketService::sendMsg()
+void SocketService::sendMsg(QString message)
 {
     //BLANK
 }
@@ -57,7 +57,7 @@ void SocketService::ReadMsg()
     if (code == -1) {
         emit error(1);//Cannot read from remote.
     }
-    if (!messages.isNull()) {
+    if (!messages.isEmpty()) {
         emit recvedMsg(messages);
     }
     return;

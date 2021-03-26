@@ -34,6 +34,10 @@ private slots:
     void onErrorOccurred(int);
 
 
+    void on_action_QAQ_triggered();
+
+    void on_lineEdit_returnPressed();
+
 private:
     Ui::MainWindow *ui;
     QMessageBox msgBox;
