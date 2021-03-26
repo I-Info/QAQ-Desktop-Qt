@@ -20,10 +20,14 @@ public:
 
 signals:
     void startSocket();
+    void stopSocket();
+    void setSocket(const QString&, const int&);
 
 private slots:
     void on_connectionButton_clicked();
     void onGetStatus(QString);
+    void onConnnected();
+    void onDisConned();
 
 private:
     Ui::MainWindow *ui;

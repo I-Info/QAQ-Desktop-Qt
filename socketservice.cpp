@@ -1,10 +1,11 @@
 #include "socketservice.h"
+#include <QThread>
 SocketService::SocketService(QObject *parent) : QObject(parent)
 {
     isConnected = false;
     serverIp = "0.0.0.0";
     serverPort = 8080;
-    tcpSocket = new QTcpSocket();
+
 }
 
 SocketService::~SocketService()
@@ -14,25 +15,24 @@ SocketService::~SocketService()
 
 void SocketService::setSocket(const QString &ip, const int &port)
 {
+    qDebug()<<"set: "<<QThread::currentThreadId();
+    tcpSocket = new QTcpSocket();
     this->serverIp = ip;
     this->serverPort = port;
     isConnected = false;
-    isErrorOccurred = false;
     //Link
-    connect(tcpSocket,SIGNAL(connected()),this,SLOT(onConnected()));
     connect(tcpSocket,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(onReadMsg()));
 }
 
 
-void SocketService::onConnected()
-{
-
-}
-
 void SocketService::onDisconnected()
 {
-
+    qDebug() << "disconnect: " << QThread::currentThreadId();
+    emit disConnected();
+    isConnected = false;
+    QThread::msleep(10);
+    emit connStatus("Disconnected.");
 }
 
 void SocketService::onReadMsg()
@@ -44,18 +44,17 @@ void SocketService::onReadMsg()
 
 void SocketService::socketConnect()
 {
-    int tryTimes = 0;
-    while (!isConnected && !isErrorOccurred && tryTimes < 3) {
-        tcpSocket->connectToHost(serverIp,serverPort);
-        isConnected = tcpSocket->waitForConnected(3000);
-        std::string status = "Connecting.." + std::to_string(tryTimes);
-        //emit connStatus(QString().fromStdString(status));
-        tryTimes++;
+    qDebug()<<"Connect: "<<QThread::currentThreadId();
+    tcpSocket->connectToHost(serverIp,serverPort);
+    emit connStatus("Connecting...");
+    isConnected = tcpSocket->waitForConnected(5000);
+    if (!isConnected) {
+        emit connStatus("Connect failed");
+    } else {
+        emit connected();
+        QThread::msleep(10);
+        emit connStatus("Connected");
     }
-    if (tryTimes >= 3) {
-        //emit error(0);//0 = CONN_TIME_OUT
-    }
-    return;
 }
 
 void SocketService::socketDisConn()

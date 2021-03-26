@@ -9,19 +9,33 @@ MainWindow::MainWindow(QWidget *parent)
     serverIp = "127.0.0.1";
     serverPort = 8081;
     userName = "QQ";
+
+
+    //For debug
+    ui->serverInfo->setText("0.0.0.0:8080");
+    ui->userInfo->setText("test");
+
+
     statusBar = new QLabel("Thank you for using QAQ");
     ui->statusbar->addPermanentWidget(statusBar);
+
     mainService = new SocketService();
     mainService->moveToThread(&serviceThread);
+    connect(this,&MainWindow::setSocket,mainService,&SocketService::setSocket);
     connect(this,&MainWindow::startSocket,mainService,&SocketService::socketConnect);
+    connect(this,&MainWindow::stopSocket,mainService,&SocketService::socketDisConn);
     connect(mainService,&SocketService::connStatus,this,&MainWindow::onGetStatus);
+    connect(mainService,&SocketService::connected,this,&MainWindow::onConnnected);
+    connect(mainService,&SocketService::disConnected,this,&MainWindow::onDisConned);
     serviceThread.start();
 }
 
 MainWindow::~MainWindow()
 {
-    delete mainService;
+    serviceThread.quit();
+    serviceThread.wait();
     delete statusBar;
+    delete mainService;
     delete ui;
 }
 
@@ -44,7 +58,7 @@ void MainWindow::on_connectionButton_clicked()
                     serverIp = tempServerIp;
                     serverPort = tempServerPort;
                     //connect
-                    //mainService->setSocket(serverIp, serverPort);
+                    emit setSocket(serverIp, serverPort);
                     emit startSocket();
 
                 } else {
@@ -62,7 +76,7 @@ void MainWindow::on_connectionButton_clicked()
     }
     else {
         //disconnect
-
+        emit stopSocket();
 
     }
 }
@@ -70,6 +84,20 @@ void MainWindow::on_connectionButton_clicked()
 void MainWindow::onGetStatus(QString status)
 {
     statusBar->setText(status);
+}
+
+void MainWindow::onConnnected()
+{
+    ui->serverInfo->setEnabled(false);
+    ui->userInfo->setEnabled(false);
+    ui->connectionButton->setText("disconnect");
+}
+
+void MainWindow::onDisConned()
+{
+    ui->serverInfo->setEnabled(true);
+    ui->userInfo->setEnabled(true);
+    ui->connectionButton->setText("connect");
 }
 
 void MainWindow::errorBox(QString title, QString text)
