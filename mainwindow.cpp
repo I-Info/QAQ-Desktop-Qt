@@ -50,6 +50,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_connectionButton_clicked()
 {
+    //qDebug()<<"main: "<<QThread::currentThreadId();
     QLineEdit *line1 = ui->serverInfo;
     QLineEdit *line2 = ui->userInfo;
     if (line1->isEnabled()) {
@@ -108,10 +109,11 @@ void MainWindow::onDisConned()
     ui->connectionButton->setText("connect");
 }
 
-void MainWindow::onRecvedMsg(QString recvMsg)
+void MainWindow::onRecvedMsg(QString user, QString date, QString msg)
 {
     QString messages = ui->textBox->toPlainText();
-    messages = messages + recvMsg + "\n";
+    QString temp = user + "@" + date + ":" + msg;
+    messages = messages + temp + "\n";
     ui->textBox->setText(messages);
 }
 
@@ -119,7 +121,10 @@ void MainWindow::onErrorOccurred(int code)
 {
     if (code == 1) {
         //get message error
-        errorBox("Network error","Get remote message failed, cheack your network connection.");
+        errorBox("Network error","Get remote message failed, please cheack your network connection.");
+        return;
+    } else if (code == 2) {
+        errorBox("Network error","Send message failed, please cheack your network connection.");
         return;
     }
 
@@ -157,6 +162,13 @@ void MainWindow::on_sendButton_clicked()
 
 void MainWindow::on_action_QAQ_triggered()
 {
+    aboutBox.setWindowTitle("About");
+    aboutBox.setText("About");
+    aboutBox.setInformativeText("QAQ Client:\n Developed by I_Info, NodeSans.\n Thanks to -----");
+    aboutBox.setStandardButtons(QMessageBox::Ok);
+    aboutBox.setDefaultButton(QMessageBox::Ok);
+    aboutBox.setIcon(QMessageBox::Information);
+    aboutBox.open();//void block thread.
 
 }
 

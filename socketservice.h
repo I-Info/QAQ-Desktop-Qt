@@ -18,19 +18,18 @@ signals:
     void connStatus(QString);
     void connected();
     void disConnected();
-    void recvedMsg(QString);
+    void recvedMsg(QString, QString, QString);
 
 public slots:
     void socketConnect();
     void socketDisConn();
     void setSocket(const QString& ip, const int& port);
-    void sendMsg(QString);
+    void sendMsg(int,QString,QString);
 
 
 private slots:
     void onDisconnected();
     void ReadMsg();
-
 
 private:
     QTcpSocket *tcpSocket;
@@ -38,6 +37,7 @@ private:
     QString serverIp;
     int serverPort;
 
+    void handle(QString);
 
 };
 

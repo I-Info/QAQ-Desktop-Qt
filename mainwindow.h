@@ -30,9 +30,8 @@ private slots:
     void onGetStatus(QString);
     void onConnnected();
     void onDisConned();
-    void onRecvedMsg(QString);
+    void onRecvedMsg(QString,QString,QString);
     void onErrorOccurred(int);
-
 
     void on_action_QAQ_triggered();
 
@@ -41,6 +40,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QMessageBox msgBox;
+    QMessageBox aboutBox;
     QString serverIp;
     qint16 serverPort;
     QString userName;
@@ -48,6 +48,7 @@ private:
     QThread serviceThread;
     QLabel *statusBar;
     void errorBox(QString title = "Error!", QString text = "Please check the info you have inputed.");
+
 
 };
 #endif // MAINWINDOW_H
