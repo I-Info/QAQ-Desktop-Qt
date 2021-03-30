@@ -101,6 +101,7 @@ void MainWindow::onConnnected()
     ui->serverInfo->setEnabled(false);
     ui->userInfo->setEnabled(false);
     ui->connectionButton->setText("disconnect");
+    ui->groupList->clear();
 }
 
 void MainWindow::onDisConned()
