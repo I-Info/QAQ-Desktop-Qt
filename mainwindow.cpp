@@ -5,11 +5,12 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-{
+{   
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0,1);
     ui->splitter->setStretchFactor(1,2);
 
+    ui->textBox->append("<meta charset='UTF-8'>");
 
     //For debug
     ui->serverInfo->setText("127.0.0.1:8080");

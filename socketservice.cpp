@@ -36,28 +36,28 @@ void SocketService::sendMsg(const int& mode, const QString& arg1 = "", const QSt
      * */
     if (mode == 1 && !arg1.isEmpty()) {
         QString data = "user&;connect&;" + arg1;
-        if (tcpSocket->write(data.toLatin1()) == -1 || !tcpSocket->waitForBytesWritten()) {
+        if (tcpSocket->write(data.toUtf8()) == -1 || !tcpSocket->waitForBytesWritten()) {
             emit error(3);//connect request send failed.
         }
         return;
     }
     else if (mode == 2 && !arg1.isEmpty() && !arg1.isEmpty()) {
         QString data = "msg&;send&;" + arg1 + "&;" + arg2;
-        if (tcpSocket->write(data.toLatin1()) == -1) {
+        if (tcpSocket->write(data.toUtf8()) == -1) {
             emit error(2);//message send failed
         }
         return;
     }
     else if (mode == 3 && !arg1.isEmpty()) {
         QString data = "msg&;list&;" + arg1;
-        if (tcpSocket->write(data.toLatin1()) == -1) {
+        if (tcpSocket->write(data.toUtf8()) == -1) {
             emit error(4);//message history request failed
         }
         return;
     }
     else if (mode == 4) {
         QString data = "group&;list";
-        if (tcpSocket->write(data.toLatin1()) == -1) {
+        if (tcpSocket->write(data.toUtf8()) == -1) {
             emit error(5);//group list request failed.
         }
         return;
