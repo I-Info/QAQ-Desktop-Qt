@@ -196,7 +196,7 @@ void MainWindow::on_action_QAQ_triggered()
 {
     aboutBox.setWindowTitle("About");
     aboutBox.setText("About");
-    aboutBox.setInformativeText("QAQ Client V1.0.0:\n Developed by I_Info.\n Thanks to NodeSans");
+    aboutBox.setInformativeText("QAQ Client V1.0.0:\n Developed by I_Info, Node Sans");
     aboutBox.setStandardButtons(QMessageBox::Ok);
     aboutBox.setDefaultButton(QMessageBox::Ok);
     aboutBox.setIcon(QMessageBox::Information);
