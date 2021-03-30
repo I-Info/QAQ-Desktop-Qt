@@ -22,7 +22,7 @@ signals:
     void startSocket(QString,int,QString);
     void stopSocket();
     void setSocket();
-    void sendMsg(int,QString,QString);
+    void sendMsg(int,QString="",QString="");
 
 private slots:
     void on_connectionButton_clicked();
@@ -32,10 +32,13 @@ private slots:
     void onDisConned();
     void onRecvedMsg(QString,QString,QString,QString);
     void onErrorOccurred(int);
+    void onGetGroupList(QStringList);
 
     void on_action_QAQ_triggered();
 
     void on_lineEdit_returnPressed();
+
+    void on_getGroup_clicked();
 
 private:
     Ui::MainWindow *ui;

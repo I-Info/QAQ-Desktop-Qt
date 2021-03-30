@@ -92,7 +92,7 @@
            <enum>QLayout::SetMinimumSize</enum>
           </property>
           <item>
-           <widget class="QListWidget" name="listWidget"/>
+           <widget class="QListWidget" name="groupList"/>
           </item>
           <item>
            <widget class="QPushButton" name="getGroup">

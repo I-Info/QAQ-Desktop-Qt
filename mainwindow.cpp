@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mainService,&SocketService::disConnected,this,&MainWindow::onDisConned);
     connect(mainService,&SocketService::recvedMsg,this,&MainWindow::onRecvedMsg);
     connect(mainService,&SocketService::error,this,&MainWindow::onErrorOccurred);
+    connect(mainService,&SocketService::groupList,this,&MainWindow::onGetGroupList);
     serviceThread.start();
     emit setSocket();
 
@@ -128,6 +129,15 @@ void MainWindow::onErrorOccurred(int code)
 
 }
 
+void MainWindow::onGetGroupList(QStringList groupList)
+{
+    ui->groupList->clear();
+    foreach (QString groupName, groupList) {
+        QListWidgetItem *item = new QListWidgetItem(groupName);
+        ui->groupList->addItem(item);
+    }
+}
+
 void MainWindow::errorBox(QString title, QString text)
 {
     msgBox.setWindowTitle(title);
@@ -173,4 +183,11 @@ void MainWindow::on_action_QAQ_triggered()
 void MainWindow::on_lineEdit_returnPressed()
 {
     on_sendButton_clicked();
+}
+
+void MainWindow::on_getGroup_clicked()
+{
+    if (!ui->serverInfo->isEnabled()) {
+        emit sendMsg(4);
+    }
 }

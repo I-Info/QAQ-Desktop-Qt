@@ -19,6 +19,7 @@ signals:
     void connected();
     void disConnected();
     void recvedMsg(QString, QString, QString, QString);
+    void groupList(QStringList);
 
 public slots:
     void socketConnect(QString,int,QString);
