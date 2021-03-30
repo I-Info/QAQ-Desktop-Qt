@@ -10,10 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->splitter->setStretchFactor(0,1);
     ui->splitter->setStretchFactor(1,2);
 
-    serverIp = "0.0.0.0";
-    serverPort = 8080;
-    userName = "QQ";
-
 
     //For debug
     ui->serverInfo->setText("127.0.0.1:8080");
