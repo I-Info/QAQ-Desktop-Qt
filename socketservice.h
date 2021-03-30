@@ -32,14 +32,17 @@ public slots:
 private slots:
     void onDisconnected();
     void ReadMsg();
+    void onBytesWitten();
 
 private:
     QTcpSocket *tcpSocket;
     bool isConnected;
+    bool inWritten;
     QString serverIp;
     int serverPort;
 
     void handle(const QString&);
+    bool waitForWritten();
 
 };
 

@@ -18,10 +18,12 @@ void SocketService::setSocket()
 {
     //qDebug()<<"set: "<<QThread::currentThreadId();
     tcpSocket = new QTcpSocket();
+    tcpSocket->setReadBufferSize(4096);
     //isConnected = false;
     //Link
     connect(tcpSocket,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(ReadMsg()));
+    connect(tcpSocket,SIGNAL(bytesWritten()),this,SLOT(onBytesWritten()));
 }
 
 void SocketService::sendMsg(const int& mode, const QString& arg1 = "", const QString& arg2 = "")
@@ -77,15 +79,15 @@ void SocketService::onDisconnected()
 
 void SocketService::ReadMsg()
 {
-    char recvMsg[512] = {};
+    char recvMsg[4096] = {};
     QString data;
-    int code = tcpSocket->readLine(recvMsg,512);
+    int code = tcpSocket->readLine(recvMsg,4096);
     while (code > 0) {
         data = QString(recvMsg);
         if (!data.isEmpty()) {
             handle(data);
         }
-        code = tcpSocket->readLine(recvMsg,512);
+        code = tcpSocket->readLine(recvMsg,4096);
     }
     if (code == -1) {
         emit error(1);//Cannot read from remote.
@@ -139,7 +141,7 @@ void SocketService::socketConnect(const QString& ip, const int& port, const QStr
     } else {
         emit connStatus("Connected!Loading...");
         this->sendMsg(1,userName);
-        QThread::msleep(500);//
+//        QThread::msleep(500);
         this->sendMsg(4);
         emit connStatus("Group list load finished");
         emit connected();
