@@ -34,8 +34,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mainService,&SocketService::disConnected,this,&MainWindow::onDisConned);
     connect(mainService,&SocketService::recvedMsg,this,&MainWindow::onRecvedMsg);
     connect(mainService,&SocketService::error,this,&MainWindow::onErrorOccurred);
-
     serviceThread.start();
+    emit setSocket();
+
 }
 
 MainWindow::~MainWindow()
@@ -67,8 +68,7 @@ void MainWindow::on_connectionButton_clicked()
                     serverIp = tempServerIp;
                     serverPort = tempServerPort;
                     //connect
-                    emit setSocket(serverIp, serverPort);
-                    emit startSocket();
+                    emit startSocket(serverIp,serverPort,userName);
 
                 } else {
                     errorBox();
@@ -147,7 +147,7 @@ void MainWindow::on_sendButton_clicked()
     QString message = ui->lineEdit->text();
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
         if (message.length() < 450) {
-            emit sendMsg(message);
+            emit sendMsg(2,"test",message);
             ui->lineEdit->setText("");
         } else {
             errorBox("Error", "the message is too long.");

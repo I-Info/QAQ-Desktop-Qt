@@ -19,10 +19,10 @@ public:
     ~MainWindow();
 
 signals:
-    void startSocket();
+    void startSocket(QString,int,QString);
     void stopSocket();
-    void setSocket(const QString&, const int&);
-    void sendMsg(QString);
+    void setSocket();
+    void sendMsg(int,QString,QString);
 
 private slots:
     void on_connectionButton_clicked();

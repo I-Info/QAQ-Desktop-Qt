@@ -21,9 +21,9 @@ signals:
     void recvedMsg(QString, QString, QString);
 
 public slots:
-    void socketConnect();
+    void socketConnect(QString,int,QString);
     void socketDisConn();
-    void setSocket(const QString& ip, const int& port);
+    void setSocket();
     void sendMsg(int,QString,QString);
 
 

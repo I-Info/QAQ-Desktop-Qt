@@ -11,18 +11,16 @@ SocketService::SocketService(QObject *parent) : QObject(parent)
 
 SocketService::~SocketService()
 {
-    if (tcpSocket) {
+    if (tcpSocket != nullptr) {
         delete tcpSocket;
     }
 }
 
-void SocketService::setSocket(const QString &ip, const int &port)
+void SocketService::setSocket()
 {
     //qDebug()<<"set: "<<QThread::currentThreadId();
     tcpSocket = new QTcpSocket();
-    this->serverIp = ip;
-    this->serverPort = port;
-    isConnected = false;
+    //isConnected = false;
     //Link
     connect(tcpSocket,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(ReadMsg()));
@@ -33,10 +31,9 @@ void SocketService::sendMsg(int mode, QString arg1 = "", QString arg2 = "")
     /*modes:
      * user connect [name] 1
      * user status 0
-     * user disconnect 2
-     * msg send [group_name] [msg] 3
-     * msg list [group_name] 4 -> message {[group_name] [username] [date] [msg]}
-     * group list 5-> group {[group_name]}
+     * msg send [group_name] [msg] 2
+     * msg list [group_name] 3 -> message {[group_name] [username] [date] [msg]}
+     * group list 4-> group {[group_name]}
      *
      * */
     if (mode == 1 && !arg1.isEmpty()) {
@@ -46,6 +43,28 @@ void SocketService::sendMsg(int mode, QString arg1 = "", QString arg2 = "")
         }
         return;
     }
+    else if (mode == 2 && !arg1.isEmpty() && !arg1.isEmpty()) {
+        QString data = "msg&;send&;" + arg1 + "&;" + arg2;
+        if (tcpSocket->write(data.toLatin1()) == -1) {
+            emit error(2);
+        }
+        return;
+    }
+    else if (mode == 3 && !arg1.isEmpty()) {
+        QString data = "msg&;list&;" + arg1;
+        if (tcpSocket->write(data.toLatin1()) == -1) {
+            emit error(2);
+        }
+        return;
+    }
+    else if (mode == 4) {
+        QString data = "group&;list";
+        if (tcpSocket->write(data.toLatin1()) == -1) {
+            emit error(2);
+        }
+        return;
+    }
+
 
 //    if (!message.isEmpty()) {
 //        message = "msg&;send&;" + message;
@@ -100,9 +119,11 @@ void SocketService::handle(QString data)
 
 
 
-void SocketService::socketConnect()
+void SocketService::socketConnect(QString ip,int port,QString userName)
 {
     //qDebug()<<"Connect: "<<QThread::currentThreadId();
+    this->serverIp = ip;
+    this->serverPort = port;
     tcpSocket->connectToHost(serverIp,serverPort);
     emit connStatus("Connecting...");
     isConnected = tcpSocket->waitForConnected(5000);
@@ -112,6 +133,7 @@ void SocketService::socketConnect()
         emit connected();
         QThread::msleep(10);
         emit connStatus("Connected");
+        this->sendMsg(1,userName);
     }
 }
 
@@ -121,6 +143,5 @@ void SocketService::socketDisConn()
     if (isConnected) {
        tcpSocket->waitForDisconnected();
     }
-    tcpSocket->deleteLater();
     return;
 }
