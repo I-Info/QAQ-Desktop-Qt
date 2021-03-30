@@ -5,8 +5,6 @@ SocketService::SocketService(QObject *parent) : QObject(parent)
     //qDebug()<<"cons: "<<QThread::currentThreadId();
     tcpSocket = nullptr;
     isConnected = false;
-    serverIp = "0.0.0.0";
-    serverPort = 8080;
 }
 
 SocketService::~SocketService()
@@ -39,28 +37,28 @@ void SocketService::sendMsg(int mode, QString arg1 = "", QString arg2 = "")
     if (mode == 1 && !arg1.isEmpty()) {
         QString data = "user&;connect&;" + arg1 + "\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
-            emit error(2);
+            emit error(3);//connect request send failed.
         }
         return;
     }
     else if (mode == 2 && !arg1.isEmpty() && !arg1.isEmpty()) {
         QString data = "msg&;send&;" + arg1 + "&;" + arg2 + "\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
-            emit error(2);
+            emit error(2);//message send failed
         }
         return;
     }
     else if (mode == 3 && !arg1.isEmpty()) {
         QString data = "msg&;list&;" + arg1 + "\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
-            emit error(2);
+            emit error(4);//message history request failed
         }
         return;
     }
     else if (mode == 4) {
         QString data = "group&;list\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
-            emit error(2);
+            emit error(5);//group list request failed.
         }
         return;
     }
@@ -129,9 +127,9 @@ void SocketService::socketConnect(QString ip,int port,QString userName)
         emit connStatus("Connect failed");
     } else {
         emit connected();
-        QThread::msleep(10);
         emit connStatus("Connected");
         this->sendMsg(1,userName);
+        QThread::msleep(10);
         this->sendMsg(4);
     }
 }
@@ -140,7 +138,7 @@ void SocketService::socketDisConn()
 {
     tcpSocket->disconnectFromHost();
     if (isConnected) {
-       tcpSocket->waitForDisconnected();
+        tcpSocket->waitForDisconnected();
     }
     return;
 }

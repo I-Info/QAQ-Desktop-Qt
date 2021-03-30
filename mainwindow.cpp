@@ -77,7 +77,7 @@ void MainWindow::on_connectionButton_clicked()
             else {
                 errorBox();
             }
-    //        qDebug() << serverIp << serverPort;
+            //        qDebug() << serverIp << serverPort;
         }
         else {
             errorBox();
@@ -111,20 +111,26 @@ void MainWindow::onDisConned()
 
 void MainWindow::onRecvedMsg(QString group, QString user, QString date, QString msg)
 {
-
-    QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>: " + msg + "</p>";
-    ui->textBox->append(temp);
+    /*Get message*/
+    if (group == currentGroup) {
+        QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>: " + msg + "</p>";
+        ui->textBox->append(temp);
+    }
 }
 
 void MainWindow::onErrorOccurred(int code)
 {
     if (code == 1) {
         //get message error
-        errorBox("Network error","Get remote message failed, please cheack your network connection.");
-        return;
+        errorBox("Network error","Read remote message failed, please cheack your network.");
     } else if (code == 2) {
-        errorBox("Network error","Send message failed, please cheack your network connection.");
-        return;
+        errorBox("Network error","Send message failed, please cheack your network.");
+    } else if (code == 3) {
+        errorBox("Network error","Connection request send failed, please cheack your network.");
+    } else if (code == 4) {
+        errorBox("Network error","Get message history failed, please cheack your network.");
+    } else if (code == 5) {
+        errorBox("Network error","Get group list failed, please cheack your network.");
     }
 
 }
@@ -155,7 +161,11 @@ void MainWindow::on_sendButton_clicked()
     QString message = ui->lineEdit->text();
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
         if (message.length() < 450) {
-            emit sendMsg(2,"test",message);
+            if (!currentGroup.isEmpty()) {
+                emit sendMsg(2,currentGroup,message);
+            } else {
+                errorBox("Error","Sorry, you can't send message before you select a group");
+            }
             ui->lineEdit->setText("");
         } else {
             errorBox("Error", "the message is too long.");
@@ -189,5 +199,16 @@ void MainWindow::on_getGroup_clicked()
 {
     if (!ui->serverInfo->isEnabled()) {
         emit sendMsg(4);
+    } else  {
+        errorBox("Error","Please connect first");
+    }
+}
+
+void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item)
+{
+    if (!ui->serverInfo->isEnabled()) {
+        currentGroup = item->text();
+        ui->textBox->clear();
+        emit sendMsg(3,currentGroup);
     }
 }

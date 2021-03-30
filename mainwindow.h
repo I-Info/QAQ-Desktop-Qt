@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QThread>
 #include <QLabel>
+#include <QListWidgetItem>
 #include "socketservice.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -39,6 +40,8 @@ private slots:
     void on_lineEdit_returnPressed();
 
     void on_getGroup_clicked();
+
+    void on_groupList_itemDoubleClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;
