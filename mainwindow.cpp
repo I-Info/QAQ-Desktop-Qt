@@ -153,7 +153,7 @@ void MainWindow::onGetHistory(const QString &group, const QStringList &users, co
             QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>: " + msgs[index] + "</p>";
             ui->textBox->append(temp);
         }
-        ui->textBox->append("<p style='color: grey'>------------------------------</p>");
+        //ui->textBox->append("<p style='color: grey'>------------------------------</p>");
     }
 }
 
@@ -176,7 +176,7 @@ void MainWindow::on_sendButton_clicked()
         if (message.length() < 450) {
             if (!currentGroup.isEmpty()) {
                 QByteArray base64(message.toUtf8());
-                emit sendMsg(2,currentGroup,base64);
+                emit sendMsg(2,currentGroup,base64.toBase64());
             } else {
                 errorBox("Error","Sorry, you can't send message before you select a group");
             }
