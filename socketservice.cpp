@@ -24,7 +24,7 @@ void SocketService::setSocket()
     connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(ReadMsg()));
 }
 
-void SocketService::sendMsg(int mode, QString arg1 = "", QString arg2 = "")
+void SocketService::sendMsg(const int& mode, const QString& arg1 = "", const QString& arg2 = "")
 {
     /*modes:
      * user connect [name] 1
@@ -35,28 +35,28 @@ void SocketService::sendMsg(int mode, QString arg1 = "", QString arg2 = "")
      *
      * */
     if (mode == 1 && !arg1.isEmpty()) {
-        QString data = "user&;connect&;" + arg1 + "\n";
-        if (tcpSocket->write(data.toLatin1()) == -1) {
+        QString data = "user&;connect&;" + arg1;
+        if (tcpSocket->write(data.toLatin1()) == -1 || !tcpSocket->waitForBytesWritten()) {
             emit error(3);//connect request send failed.
         }
         return;
     }
     else if (mode == 2 && !arg1.isEmpty() && !arg1.isEmpty()) {
-        QString data = "msg&;send&;" + arg1 + "&;" + arg2 + "\n";
+        QString data = "msg&;send&;" + arg1 + "&;" + arg2;
         if (tcpSocket->write(data.toLatin1()) == -1) {
             emit error(2);//message send failed
         }
         return;
     }
     else if (mode == 3 && !arg1.isEmpty()) {
-        QString data = "msg&;list&;" + arg1 + "\n";
+        QString data = "msg&;list&;" + arg1;
         if (tcpSocket->write(data.toLatin1()) == -1) {
             emit error(4);//message history request failed
         }
         return;
     }
     else if (mode == 4) {
-        QString data = "group&;list\n";
+        QString data = "group&;list";
         if (tcpSocket->write(data.toLatin1()) == -1) {
             emit error(5);//group list request failed.
         }
@@ -94,17 +94,28 @@ void SocketService::ReadMsg()
     return;
 }
 
-void SocketService::handle(QString data)
+void SocketService::handle(const QString& data)
 {
     QStringList args = data.split("&;",Qt::SkipEmptyParts);
     if (args[0] == "message" && args.length() >= 5) {
         int numberOfMsg = (args.length() - 1) / 4;
-        for (int index = 1 ; index < numberOfMsg * 4 +1; index += 4) {
+        for (int index = 1 ; index < numberOfMsg * 4 + 1; index += 4) {
             QString group = args[index];
             QString user = args[index + 1];
             QString date = args[index + 2];
-            QString msg = args[index + 3];
+            QString msg = QByteArray::fromBase64(args[index + 3].toLatin1());
             emit recvedMsg(group, user, date, msg);
+        }
+    }
+    else if (args[0] == "historyMessage" && args.length() >= 5) {
+        int numberOfMsg = (args.length() - 2) / 3;
+        QString group = args[1];
+        QStringList users, dates, msgs;
+        for (int index = 2; index < numberOfMsg * 3 + 2; index += 3) {
+            users.append(args[index]);
+            dates.append(args[index + 1]);
+            msgs.append(QByteArray::fromBase64(args[index + 2].toLatin1()));
+            emit historyMsg(group, users, dates, msgs);
         }
     }
     else if (args[0] == "group" && args.length()>=2) {
@@ -115,7 +126,7 @@ void SocketService::handle(QString data)
 
 
 
-void SocketService::socketConnect(QString ip,int port,QString userName)
+void SocketService::socketConnect(const QString& ip, const int& port, const QString& userName)
 {
     //qDebug()<<"Connect: "<<QThread::currentThreadId();
     this->serverIp = ip;
@@ -126,11 +137,12 @@ void SocketService::socketConnect(QString ip,int port,QString userName)
     if (!isConnected) {
         emit connStatus("Connect failed");
     } else {
-        emit connected();
-        emit connStatus("Connected");
+        emit connStatus("Connected!Loading...");
         this->sendMsg(1,userName);
-        QThread::msleep(10);
+        QThread::msleep(500);
         this->sendMsg(4);
+        emit connStatus("Group list load finished");
+        emit connected();
     }
 }
 

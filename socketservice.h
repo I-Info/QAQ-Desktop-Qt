@@ -15,17 +15,18 @@ public:
 
 signals:
     void error(int);
-    void connStatus(QString);
+    void connStatus(const QString&);
     void connected();
     void disConnected();
-    void recvedMsg(QString, QString, QString, QString);
-    void groupList(QStringList);
+    void recvedMsg(const QString&, const QString&, const QString&, const QString&);
+    void historyMsg(const QString&, const QStringList&, const QStringList&, const QStringList&);
+    void groupList(const QStringList&);
 
 public slots:
-    void socketConnect(QString,int,QString);
+    void socketConnect(const QString&,const int&, const QString&);
     void socketDisConn();
     void setSocket();
-    void sendMsg(int,QString,QString);
+    void sendMsg(const int&, const QString&, const QString&);
 
 
 private slots:
@@ -38,7 +39,7 @@ private:
     QString serverIp;
     int serverPort;
 
-    void handle(QString);
+    void handle(const QString&);
 
 };
 

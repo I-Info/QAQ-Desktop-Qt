@@ -20,20 +20,21 @@ public:
     ~MainWindow();
 
 signals:
-    void startSocket(QString,int,QString);
+    void startSocket(const QString&,const int&,const QString&);
     void stopSocket();
     void setSocket();
-    void sendMsg(int,QString="",QString="");
+    void sendMsg(const int&,const QString& = "",const QString& = "");
 
 private slots:
     void on_connectionButton_clicked();
     void on_sendButton_clicked();
-    void onGetStatus(QString);
+    void onGetStatus(const QString&);
     void onConnnected();
     void onDisConned();
-    void onRecvedMsg(QString,QString,QString,QString);
-    void onErrorOccurred(int);
-    void onGetGroupList(QStringList);
+    void onRecvedMsg(const QString&,const QString&,const QString&,const QString&);
+    void onErrorOccurred(const int&);
+    void onGetGroupList(const QStringList&);
+    void onGetHistory(const QString&, const QStringList&, const QStringList&, const QStringList&);
 
     void on_action_QAQ_triggered();
 
@@ -54,7 +55,7 @@ private:
     SocketService *mainService;
     QThread serviceThread;
     QLabel *statusBar;
-    void errorBox(QString title = "Error!", QString text = "Please check the info you have inputed.");
+    void errorBox(const QString& = "Error", const QString& = "Please check infomation");
 
 
 };

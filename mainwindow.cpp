@@ -14,10 +14,9 @@ MainWindow::MainWindow(QWidget *parent)
     //For debug
     ui->serverInfo->setText("127.0.0.1:8080");
     ui->userInfo->setText("test");
-    ui->textBox->setHtml("<html></html");
 
 
-    statusBar = new QLabel("Thank you for using QAQ");
+    statusBar = new QLabel("QAQ");
     ui->statusbar->addPermanentWidget(statusBar);
 
     //Initialize main socket service
@@ -34,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mainService,&SocketService::recvedMsg,this,&MainWindow::onRecvedMsg);
     connect(mainService,&SocketService::error,this,&MainWindow::onErrorOccurred);
     connect(mainService,&SocketService::groupList,this,&MainWindow::onGetGroupList);
+    connect(mainService,&SocketService::historyMsg,this,&MainWindow::onGetHistory);
     serviceThread.start();
     emit setSocket();
 
@@ -90,7 +90,7 @@ void MainWindow::on_connectionButton_clicked()
     }
 }
 
-void MainWindow::onGetStatus(QString status)
+void MainWindow::onGetStatus(const QString& status)
 {
     statusBar->setText(status);
 }
@@ -109,7 +109,7 @@ void MainWindow::onDisConned()
     ui->connectionButton->setText("connect");
 }
 
-void MainWindow::onRecvedMsg(QString group, QString user, QString date, QString msg)
+void MainWindow::onRecvedMsg(const QString& group, const QString& user, const QString& date, const QString& msg)
 {
     /*Get message*/
     if (group == currentGroup) {
@@ -118,7 +118,7 @@ void MainWindow::onRecvedMsg(QString group, QString user, QString date, QString 
     }
 }
 
-void MainWindow::onErrorOccurred(int code)
+void MainWindow::onErrorOccurred(const int& code)
 {
     if (code == 1) {
         //get message error
@@ -135,7 +135,7 @@ void MainWindow::onErrorOccurred(int code)
 
 }
 
-void MainWindow::onGetGroupList(QStringList groupList)
+void MainWindow::onGetGroupList(const QStringList& groupList)
 {
     ui->groupList->clear();
     foreach (QString groupName, groupList) {
@@ -144,7 +144,18 @@ void MainWindow::onGetGroupList(QStringList groupList)
     }
 }
 
-void MainWindow::errorBox(QString title, QString text)
+void MainWindow::onGetHistory(const QString &group, const QStringList &users, const QStringList &dates, const QStringList &msgs)
+{
+    if (group == currentGroup) {
+        int num = users.length();
+        for (int index = 0;index < num; index++) {
+            QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>: " + msgs[index] + "</p>";
+            ui->textBox->append(temp);
+        }
+    }
+}
+
+void MainWindow::errorBox(const QString& title, const QString& text)
 {
     msgBox.setWindowTitle(title);
     msgBox.setText(title);
@@ -162,7 +173,8 @@ void MainWindow::on_sendButton_clicked()
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
         if (message.length() < 450) {
             if (!currentGroup.isEmpty()) {
-                emit sendMsg(2,currentGroup,message);
+                QByteArray base64(message.toLatin1());
+                emit sendMsg(2,currentGroup,base64.toBase64());
             } else {
                 errorBox("Error","Sorry, you can't send message before you select a group");
             }
@@ -209,6 +221,7 @@ void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item)
     if (!ui->serverInfo->isEnabled()) {
         currentGroup = item->text();
         ui->textBox->clear();
+        statusBar->setText("Group: " + currentGroup);
         emit sendMsg(3,currentGroup);
     }
 }
