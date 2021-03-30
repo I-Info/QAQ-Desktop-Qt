@@ -173,8 +173,8 @@ void MainWindow::on_sendButton_clicked()
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
         if (message.length() < 450) {
             if (!currentGroup.isEmpty()) {
-                QByteArray base64(message.toLatin1());
-                emit sendMsg(2,currentGroup,base64.toBase64());
+                //QByteArray base64(message.toLatin1());
+                emit sendMsg(2,currentGroup,message);
             } else {
                 errorBox("Error","Sorry, you can't send message before you select a group");
             }
