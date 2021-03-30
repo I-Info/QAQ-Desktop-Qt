@@ -151,7 +151,7 @@ void MainWindow::onGetHistory(const QString &group, const QStringList &users, co
     if (group == currentGroup) {
         int num = users.length();
         for (int index = 0;index < num; index++) {
-            QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>: " + msgs[index] + "</p>";
+            QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>:<br>" + msgs[index] + "</p>";
             ui->textBox->append(temp);
         }
         //ui->textBox->append("<p style='color: grey'>------------------------------</p>");
