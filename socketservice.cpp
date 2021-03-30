@@ -37,28 +37,28 @@ void SocketService::sendMsg(int mode, QString arg1 = "", QString arg2 = "")
      *
      * */
     if (mode == 1 && !arg1.isEmpty()) {
-        QString data = "user&;connect&;" + arg1;
+        QString data = "user&;connect&;" + arg1 + "\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
             emit error(2);
         }
         return;
     }
     else if (mode == 2 && !arg1.isEmpty() && !arg1.isEmpty()) {
-        QString data = "msg&;send&;" + arg1 + "&;" + arg2;
+        QString data = "msg&;send&;" + arg1 + "&;" + arg2 + "\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
             emit error(2);
         }
         return;
     }
     else if (mode == 3 && !arg1.isEmpty()) {
-        QString data = "msg&;list&;" + arg1;
+        QString data = "msg&;list&;" + arg1 + "\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
             emit error(2);
         }
         return;
     }
     else if (mode == 4) {
-        QString data = "group&;list";
+        QString data = "group&;list\n";
         if (tcpSocket->write(data.toLatin1()) == -1) {
             emit error(2);
         }
@@ -81,14 +81,17 @@ void SocketService::ReadMsg()
 {
     char recvMsg[512] = {};
     QString data;
-    int code = tcpSocket->read(recvMsg,512);
+    int code = tcpSocket->readLine(recvMsg,512);
+    while (code > 0) {
+        data = QString(recvMsg);
+        if (!data.isEmpty()) {
+            handle(data);
+        }
+        code = tcpSocket->readLine(recvMsg,512);
+    }
     if (code == -1) {
         emit error(1);//Cannot read from remote.
         return;
-    }
-    data = QString(recvMsg);
-    if (!data.isEmpty()) {
-        handle(data);
     }
     return;
 }

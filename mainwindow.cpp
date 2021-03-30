@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->splitter->setStretchFactor(0,2);
+    ui->splitter->setStretchFactor(1,3);
 
     serverIp = "0.0.0.0";
     serverPort = 8080;
@@ -15,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //For debug
-    ui->serverInfo->setText("0.0.0.0:8080");
+    ui->serverInfo->setText("127.0.0.1:8080");
     ui->userInfo->setText("test");
 
 

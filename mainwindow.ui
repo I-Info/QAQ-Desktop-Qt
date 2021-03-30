@@ -95,9 +95,9 @@
            <widget class="QTreeView" name="treeView"/>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="getGroup">
             <property name="text">
-             <string>PushButton</string>
+             <string>刷新</string>
             </property>
            </widget>
           </item>
