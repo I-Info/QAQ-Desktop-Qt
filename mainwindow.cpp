@@ -115,7 +115,7 @@ void MainWindow::onRecvedMsg(const QString& group, const QString& user, const QS
 {
     /*Get message*/
     if (group == currentGroup) {
-        QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>: " + msg + "</p>";
+        QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>:<br> " + msg + "</p>";
         ui->textBox->append(temp);
     }
 }
