@@ -30,7 +30,7 @@ private slots:
     void onGetStatus(QString);
     void onConnnected();
     void onDisConned();
-    void onRecvedMsg(QString,QString,QString);
+    void onRecvedMsg(QString,QString,QString,QString);
     void onErrorOccurred(int);
 
     void on_action_QAQ_triggered();
@@ -44,6 +44,7 @@ private:
     QString serverIp;
     qint16 serverPort;
     QString userName;
+    QString currentGrop;
     SocketService *mainService;
     QThread serviceThread;
     QLabel *statusBar;

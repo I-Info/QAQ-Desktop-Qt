@@ -9,8 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     serverIp = "0.0.0.0";
-    serverPort = 8081;
+    serverPort = 8080;
     userName = "QQ";
+    currentGrop = "test";
 
 
     //For debug
@@ -109,7 +110,7 @@ void MainWindow::onDisConned()
     ui->connectionButton->setText("connect");
 }
 
-void MainWindow::onRecvedMsg(QString user, QString date, QString msg)
+void MainWindow::onRecvedMsg(QString group, QString user, QString date, QString msg)
 {
     QString messages = ui->textBox->toPlainText();
     QString temp = user + "@" + date + ":" + msg;

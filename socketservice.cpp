@@ -65,15 +65,6 @@ void SocketService::sendMsg(int mode, QString arg1 = "", QString arg2 = "")
         return;
     }
 
-
-//    if (!message.isEmpty()) {
-//        message = "msg&;send&;" + message;
-//        int code = tcpSocket->write(message.toLatin1());
-//        if (code == -1) {
-//            emit error(2);//Cannot write to remote.
-//        }
-//        return;
-//    }
 }
 
 
@@ -105,14 +96,17 @@ void SocketService::ReadMsg()
 void SocketService::handle(QString data)
 {
     QStringList args = data.split("&;",Qt::SkipEmptyParts);
-    if (args[0] == "message" && args.length() >= 4) {
-        int numberOfMsg = (args.length() - 1) / 3;
-        for (int index = 1 ; index < numberOfMsg * 3 +1; index += 3) {
-            QString user = args[index];
-            QString date = args[index + 1];
-            QString msg = args[index + 2];
-            emit recvedMsg(user, date, msg);
+    if (args[0] == "message" && args.length() >= 5) {
+        int numberOfMsg = (args.length() - 1) / 4;
+        for (int index = 1 ; index < numberOfMsg * 4 +1; index += 4) {
+            QString group = args[index];
+            QString user = args[index + 1];
+            QString date = args[index + 2];
+            QString msg = args[index + 3];
+            emit recvedMsg(group, user, date, msg);
         }
+    }
+    else if (args[0] == "group" && args.length()>=2) {
 
     }
 }
@@ -134,6 +128,7 @@ void SocketService::socketConnect(QString ip,int port,QString userName)
         QThread::msleep(10);
         emit connStatus("Connected");
         this->sendMsg(1,userName);
+        this->sendMsg(4);
     }
 }
 

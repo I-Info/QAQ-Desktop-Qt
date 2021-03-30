@@ -18,7 +18,7 @@ signals:
     void connStatus(QString);
     void connected();
     void disConnected();
-    void recvedMsg(QString, QString, QString);
+    void recvedMsg(QString, QString, QString, QString);
 
 public slots:
     void socketConnect(QString,int,QString);
