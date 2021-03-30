@@ -44,7 +44,7 @@ private:
     QString serverIp;
     qint16 serverPort;
     QString userName;
-    QString currentGrop;
+    QString currentGroup;
     SocketService *mainService;
     QThread serviceThread;
     QLabel *statusBar;

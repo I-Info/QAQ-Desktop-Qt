@@ -110,7 +110,9 @@ void SocketService::handle(QString data)
         }
     }
     else if (args[0] == "group" && args.length()>=2) {
+        for (int index = 0; index < args.length(); index ++) {
 
+        }
     }
 }
 

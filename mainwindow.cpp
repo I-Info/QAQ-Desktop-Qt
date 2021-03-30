@@ -7,18 +7,18 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->splitter->setStretchFactor(0,2);
-    ui->splitter->setStretchFactor(1,3);
+    ui->splitter->setStretchFactor(0,1);
+    ui->splitter->setStretchFactor(1,2);
 
     serverIp = "0.0.0.0";
     serverPort = 8080;
     userName = "QQ";
-    currentGrop = "test";
 
 
     //For debug
     ui->serverInfo->setText("127.0.0.1:8080");
     ui->userInfo->setText("test");
+    ui->textBox->setHtml("<html></html");
 
 
     statusBar = new QLabel("Thank you for using QAQ");
@@ -114,10 +114,9 @@ void MainWindow::onDisConned()
 
 void MainWindow::onRecvedMsg(QString group, QString user, QString date, QString msg)
 {
-    QString messages = ui->textBox->toPlainText();
-    QString temp = user + "@" + date + ":" + msg;
-    messages = messages + temp + "\n";
-    ui->textBox->setText(messages);
+
+    QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>: " + msg + "</p>";
+    ui->textBox->append(temp);
 }
 
 void MainWindow::onErrorOccurred(int code)
