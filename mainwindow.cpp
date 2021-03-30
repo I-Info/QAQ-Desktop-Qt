@@ -153,6 +153,7 @@ void MainWindow::onGetHistory(const QString &group, const QStringList &users, co
             QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>: " + msgs[index] + "</p>";
             ui->textBox->append(temp);
         }
+        ui->textBox->append("<p style='color: grey'>------------------------------</p>");
     }
 }
 
@@ -174,8 +175,8 @@ void MainWindow::on_sendButton_clicked()
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
         if (message.length() < 450) {
             if (!currentGroup.isEmpty()) {
-                //QByteArray base64(message.toLatin1());
-                emit sendMsg(2,currentGroup,message);
+                QByteArray base64(message.toUtf8());
+                emit sendMsg(2,currentGroup,base64);
             } else {
                 errorBox("Error","Sorry, you can't send message before you select a group");
             }
@@ -195,7 +196,7 @@ void MainWindow::on_action_QAQ_triggered()
 {
     aboutBox.setWindowTitle("About");
     aboutBox.setText("About");
-    aboutBox.setInformativeText("QAQ Client:\n Developed by I_Info, NodeSans.\n Thanks to -----");
+    aboutBox.setInformativeText("QAQ Client V1.0.0:\n Developed by I_Info.\n Thanks to NodeSans");
     aboutBox.setStandardButtons(QMessageBox::Ok);
     aboutBox.setDefaultButton(QMessageBox::Ok);
     aboutBox.setIcon(QMessageBox::Information);

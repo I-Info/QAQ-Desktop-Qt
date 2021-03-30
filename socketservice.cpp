@@ -103,7 +103,7 @@ void SocketService::handle(const QString& data)
             QString group = args[index];
             QString user = args[index + 1];
             QString date = args[index + 2];
-            QString msg = args[index + 3];
+            QString msg = QByteArray::fromBase64(args[index + 3].toUtf8());
             emit recvedMsg(group, user, date, msg);
         }
     }
@@ -114,7 +114,7 @@ void SocketService::handle(const QString& data)
         for (int index = 2; index < numberOfMsg * 3 + 2; index += 3) {
             users.append(args[index]);
             dates.append(args[index + 1]);
-            msgs.append(args[index + 2]);
+            msgs.append(QByteArray::fromBase64(args[index + 2].toUtf8()));
             emit historyMsg(group, users, dates, msgs);
         }
     }
@@ -139,7 +139,7 @@ void SocketService::socketConnect(const QString& ip, const int& port, const QStr
     } else {
         emit connStatus("Connected!Loading...");
         this->sendMsg(1,userName);
-        QThread::msleep(500);
+        QThread::msleep(500);//
         this->sendMsg(4);
         emit connStatus("Group list load finished");
         emit connected();
