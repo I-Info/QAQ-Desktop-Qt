@@ -56,7 +56,7 @@ void MainWindow::on_connectionButton_clicked()
     QLineEdit *line1 = ui->serverInfo;
     QLineEdit *line2 = ui->userInfo;
     if (line1->isEnabled()) {
-        if (line1->text() != "" && line2->text() != "" && line2->text().length() < 20) {
+        if (line1->text() != "" && line2->text() != "" && line2->text().length() < 10) {
             QString serverInfo = line1->text().trimmed();
             userName = line2->text().trimmed();
             int sIndex = serverInfo.lastIndexOf(':');
@@ -174,7 +174,7 @@ void MainWindow::on_sendButton_clicked()
 {
     QString message = ui->lineEdit->text();
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
-        if (message.length() < 450) {
+        if (message.length() < 50) {
             if (!currentGroup.isEmpty()) {
                 QByteArray base64(message.toUtf8());
                 emit sendMsg(2,currentGroup,base64.toBase64());

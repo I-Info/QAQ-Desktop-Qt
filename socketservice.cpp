@@ -82,15 +82,15 @@ void SocketService::onDisconnected()
 
 void SocketService::ReadMsg()
 {
-    char recvMsg[4096] = {};
+    char recvMsg[9480] = {};
     QString data;
-    int code = tcpSocket->readLine(recvMsg,4096);
+    int code = tcpSocket->readLine(recvMsg,9480);
     while (code > 0) {
         data = QString(recvMsg);
         if (!data.isEmpty()) {
             handle(data);
         }
-        code = tcpSocket->readLine(recvMsg,4096);
+        code = tcpSocket->readLine(recvMsg,9480);
     }
     if (code == -1) {
         emit error(1);//Cannot read from remote.
