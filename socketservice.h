@@ -42,7 +42,10 @@ private:
     int serverPort;
 
     void handle(const QString&);
+    void waitMSec(unsigned int);
     bool waitForWritten();
+
+
 
 };
 

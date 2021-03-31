@@ -1,5 +1,7 @@
 #include "socketservice.h"
 #include <QThread>
+#include <QtCore>
+#include <QTimer>
 SocketService::SocketService(QObject *parent) : QObject(parent)
 {
     //qDebug()<<"cons: "<<QThread::currentThreadId();
@@ -23,7 +25,7 @@ void SocketService::setSocket()
     //Link
     connect(tcpSocket,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(ReadMsg()));
-    connect(tcpSocket,SIGNAL(bytesWritten()),this,SLOT(onBytesWritten()));
+    connect(tcpSocket,&QTcpSocket::bytesWritten,this,&SocketService::onBytesWitten);
 }
 
 void SocketService::sendMsg(const int& mode, const QString& arg1 = "", const QString& arg2 = "")
@@ -38,7 +40,8 @@ void SocketService::sendMsg(const int& mode, const QString& arg1 = "", const QSt
      * */
     if (mode == 1 && !arg1.isEmpty()) {
         QString data = "user&;connect&;" + arg1;
-        if (tcpSocket->write(data.toUtf8()) == -1 || !tcpSocket->waitForBytesWritten()) {
+        inWritten = true;
+        if (tcpSocket->write(data.toUtf8()) == -1) {
             emit error(3);//connect request send failed.
         }
         return;
@@ -96,6 +99,12 @@ void SocketService::ReadMsg()
     return;
 }
 
+void SocketService::onBytesWitten()
+{
+    //check data send
+    inWritten = false;
+}
+
 void SocketService::handle(const QString& data)
 {
     QStringList args = data.split("&;",Qt::SkipEmptyParts);
@@ -123,7 +132,15 @@ void SocketService::handle(const QString& data)
     else if (args[0] == "group" && args.length()>=2) {
         args.removeFirst();
         emit groupList(args);
+        emit connStatus("Get group list finished");
     }
+}
+
+void SocketService::waitMSec(unsigned int msec)
+{
+    QTime _Timer = QTime::currentTime().addMSecs(msec);
+        while( QTime::currentTime() < _Timer )
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 
@@ -141,10 +158,17 @@ void SocketService::socketConnect(const QString& ip, const int& port, const QStr
     } else {
         emit connStatus("Connected!Loading...");
         this->sendMsg(1,userName);
-//        QThread::msleep(500);
-        this->sendMsg(4);
-        emit connStatus("Group list load finished");
         emit connected();
+
+        waitMSec(500);//Wait for bytes written
+
+        if (!inWritten) {
+            this->sendMsg(4);
+            emit connStatus("Request group list success");
+        } else {
+            emit connStatus("Cannot request group list");
+        }
+
     }
 }
 
