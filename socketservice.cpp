@@ -82,19 +82,14 @@ void SocketService::onDisconnected()
 
 void SocketService::ReadMsg()
 {
-//    char recvMsg[9480] = {};
-//    int code = tcpSocket->read(recvMsg,9480);
     waitMSec(100);
     QString data;
     data = tcpSocket->readAll();
     while (data.length() > 0) {
-//        data = QString(recvMsg);
-//        code = tcpSocket->read(recvMsg,9480);
-//        data += QString(recvMsg);
-        waitMSec(200);//wait
         if (!data.isEmpty()) {
             handle(data);
         }
+        waitMSec(200);//wait
         data = tcpSocket->readAll();
     }
 //    if (code == -1) {
