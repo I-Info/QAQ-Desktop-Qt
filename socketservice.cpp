@@ -89,7 +89,7 @@ void SocketService::ReadMsg()
         if (!data.isEmpty()) {
             handle(data);
         }
-        waitMSec(200);//wait
+        waitMSec(100);//wait
         data = tcpSocket->readAll();
     }
 //    if (code == -1) {

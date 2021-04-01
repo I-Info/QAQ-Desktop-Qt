@@ -175,9 +175,9 @@ void MainWindow::on_sendButton_clicked()
 {
     QString message = ui->lineEdit->text();
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
-        if (message.length() < 50) {
+        QByteArray base64(message.toUtf8());
+        if (base64.toBase64().length() < 90) {
             if (!currentGroup.isEmpty()) {
-                QByteArray base64(message.toUtf8());
                 emit sendMsg(2,currentGroup,base64.toBase64());
             } else {
                 errorBox("Error","Sorry, you can't send message before you select a group");
