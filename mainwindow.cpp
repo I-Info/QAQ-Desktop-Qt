@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //For debug
     ui->serverInfo->setText("127.0.0.1:8080");
-    ui->userInfo->setText("test");
+    ui->userInfo->setText("QAQ");
 
 
     statusBar = new QLabel("QAQ");
