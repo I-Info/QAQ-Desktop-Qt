@@ -20,7 +20,7 @@ void SocketService::setSocket()
 {
     //qDebug()<<"set: "<<QThread::currentThreadId();
     tcpSocket = new QTcpSocket();
-    tcpSocket->setReadBufferSize(4096);
+    tcpSocket->setReadBufferSize(9480);//read buffer
     //isConnected = false;
     //Link
     connect(tcpSocket,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
@@ -82,20 +82,25 @@ void SocketService::onDisconnected()
 
 void SocketService::ReadMsg()
 {
-    char recvMsg[9480] = {};
+//    char recvMsg[9480] = {};
+//    int code = tcpSocket->read(recvMsg,9480);
+    waitMSec(100);
     QString data;
-    int code = tcpSocket->readLine(recvMsg,9480);
-    while (code > 0) {
-        data = QString(recvMsg);
+    data = tcpSocket->readAll();
+    while (data.length() > 0) {
+//        data = QString(recvMsg);
+//        code = tcpSocket->read(recvMsg,9480);
+//        data += QString(recvMsg);
+        waitMSec(200);//wait
         if (!data.isEmpty()) {
             handle(data);
         }
-        code = tcpSocket->readLine(recvMsg,9480);
+        data = tcpSocket->readAll();
     }
-    if (code == -1) {
-        emit error(1);//Cannot read from remote.
-        return;
-    }
+//    if (code == -1) {
+//        emit error(1);//Cannot read from remote.
+//        return;
+//    }
     return;
 }
 
