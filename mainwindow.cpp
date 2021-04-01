@@ -149,6 +149,7 @@ void MainWindow::onGetGroupList(const QStringList& groupList)
 void MainWindow::onGetHistory(const QString &group, const QStringList &users, const QStringList &dates, const QStringList &msgs)
 {
     if (group == currentGroup) {
+        ui->textBox->clear();
         int num = users.length();
         for (int index = 0;index < num; index++) {
             QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>:<br>" + msgs[index] + "</p>";
@@ -197,7 +198,7 @@ void MainWindow::on_action_QAQ_triggered()
 {
     aboutBox.setWindowTitle("About");
     aboutBox.setText("About");
-    aboutBox.setInformativeText("QAQ Client V1.0.0:\n Developed by I_Info, Node Sans");
+    aboutBox.setInformativeText("QAQ Client V1.0.2:\n Developed by I_Info, Node Sans");
     aboutBox.setStandardButtons(QMessageBox::Ok);
     aboutBox.setDefaultButton(QMessageBox::Ok);
     aboutBox.setIcon(QMessageBox::Information);
