@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {   
     ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/img/logo-F.png"));
     ui->splitter->setStretchFactor(0,1);
     ui->splitter->setStretchFactor(1,2);
 
