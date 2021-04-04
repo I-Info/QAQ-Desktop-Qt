@@ -7,17 +7,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {   
     ui->setupUi(this);
-    this->setWindowIcon(QIcon(":/img/logo-F.png"));
-    ui->splitter->setStretchFactor(0,1);
+
+    this->setWindowIcon(QIcon(":/img/logo.png"));//set logo
+
+    ui->splitter->setStretchFactor(0,1);//set default size
     ui->splitter->setStretchFactor(1,2);
 
     ui->textBox->append("<meta charset='UTF-8'>");
 
-    //For debug
-    ui->serverInfo->setText("127.0.0.1:8080");
-    ui->userInfo->setText("QAQ");
+//    For debug
+//    ui->serverInfo->setText("127.0.0.1:8080");
+//    ui->userInfo->setText("QAQ");
 
-
+    //status bar
     statusBar = new QLabel("QAQ");
     ui->statusbar->addPermanentWidget(statusBar);
 
@@ -25,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainService = new SocketService();
     mainService->moveToThread(&serviceThread);
 
+    //signal&slot connection MainWindow<->socketService
     connect(this,&MainWindow::setSocket,mainService,&SocketService::setSocket);
     connect(this,&MainWindow::startSocket,mainService,&SocketService::socketConnect);
     connect(this,&MainWindow::stopSocket,mainService,&SocketService::socketDisConn);
@@ -36,7 +39,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mainService,&SocketService::error,this,&MainWindow::onErrorOccurred);
     connect(mainService,&SocketService::groupList,this,&MainWindow::onGetGroupList);
     connect(mainService,&SocketService::historyMsg,this,&MainWindow::onGetHistory);
+
+    //start thread
     serviceThread.start();
+
+    //new socket
     emit setSocket();
 
 }
@@ -79,7 +86,6 @@ void MainWindow::on_connectionButton_clicked()
             else {
                 errorBox();
             }
-            //        qDebug() << serverIp << serverPort;
         }
         else {
             errorBox();
@@ -118,6 +124,10 @@ void MainWindow::onRecvedMsg(const QString& group, const QString& user, const QS
     if (group == currentGroup) {
         QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>:<br> " + msg + "</p>";
         ui->textBox->append(temp);
+    } else {
+        QList itemList = ui->groupList->findItems(group,Qt::MatchFixedString);
+        QListWidgetItem *item = itemList.takeFirst();
+        item->setForeground(QBrush(Qt::blue));
     }
 }
 
@@ -156,12 +166,12 @@ void MainWindow::onGetHistory(const QString &group, const QStringList &users, co
             QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>:<br>" + msgs[index] + "</p>";
             ui->textBox->append(temp);
         }
-        //ui->textBox->append("<p style='color: grey'>------------------------------</p>");
     }
 }
 
 void MainWindow::errorBox(const QString& title, const QString& text)
 {
+    //MainWindow's error message
     msgBox.setWindowTitle(title);
     msgBox.setText(title);
     msgBox.setInformativeText(text);
@@ -174,6 +184,7 @@ void MainWindow::errorBox(const QString& title, const QString& text)
 
 void MainWindow::on_sendButton_clicked()
 {
+    //Send function.
     QString message = ui->lineEdit->text();
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
         QByteArray base64(message.toUtf8());
@@ -197,6 +208,7 @@ void MainWindow::on_sendButton_clicked()
 
 void MainWindow::on_action_QAQ_triggered()
 {
+    //Application about message.
     aboutBox.setWindowTitle("About");
     aboutBox.setText("About");
     aboutBox.setInformativeText("QAQ Client V1.0.2:\n Developed by I_Info, Node Sans");
@@ -209,11 +221,13 @@ void MainWindow::on_action_QAQ_triggered()
 
 void MainWindow::on_lineEdit_returnPressed()
 {
+    //On 'Enter' key pressed
     on_sendButton_clicked();
 }
 
 void MainWindow::on_getGroup_clicked()
 {
+    //Grop list refresh button
     if (!ui->serverInfo->isEnabled()) {
         emit sendMsg(4);
     } else  {
@@ -223,8 +237,10 @@ void MainWindow::on_getGroup_clicked()
 
 void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item)
 {
+    //Double click group name to join a group.
     if (!ui->serverInfo->isEnabled()) {
         currentGroup = item->text();
+        item->setForeground(QBrush(Qt::black));
         ui->textBox->clear();
         statusBar->setText("Group: " + currentGroup);
         emit sendMsg(3,currentGroup);
