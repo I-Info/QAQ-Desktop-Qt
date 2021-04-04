@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QList>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -125,7 +125,7 @@ void MainWindow::onRecvedMsg(const QString& group, const QString& user, const QS
         QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>:<br> " + msg + "</p>";
         ui->textBox->append(temp);
     } else {
-        QList itemList = ui->groupList->findItems(group,Qt::MatchFixedString);
+        QList<QListWidgetItem *> itemList = ui->groupList->findItems(group,Qt::MatchFixedString);
         QListWidgetItem *item = itemList.takeFirst();
         item->setForeground(QBrush(Qt::blue));
     }
