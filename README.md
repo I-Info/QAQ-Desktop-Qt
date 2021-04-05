@@ -7,6 +7,10 @@ QAQ项目的客户端。
 [QAQ-Server](https://github.com/lixiao189/QAQServer):
 QAQ项目服务端。
 
+# QAQ Client
+本项目使用Qt6 C++开发。
+不保证向下兼容性（Qt5/Qt4）。
+
 ## Release
 [v1.0.2](https://github.com/I-Info/QAQ-Client/releases/tag/v1.0.2)    
 
