@@ -1,2 +1,4 @@
 *.pro.*
 *.ui.autosave
+*.cpp.orig
+*.h.orig

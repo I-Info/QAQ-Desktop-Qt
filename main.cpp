@@ -2,8 +2,7 @@
 
 #include <QApplication>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     /*
      * QAQ Version: 1.0.2
      *

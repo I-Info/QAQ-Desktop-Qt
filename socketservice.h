@@ -6,14 +6,13 @@
 
 class QTcpSocket;
 
-class SocketService : public QObject
-{
+class SocketService : public QObject {
     Q_OBJECT
-public:
+  public:
     explicit SocketService(QObject *parent = nullptr);
     ~SocketService();
 
-signals:
+  signals:
     void error(int);
     void connStatus(const QString&);
     void connected();
@@ -22,19 +21,19 @@ signals:
     void historyMsg(const QString&, const QStringList&, const QStringList&, const QStringList&);
     void groupList(const QStringList&);
 
-public slots:
+  public slots:
     void socketConnect(const QString&,const int&, const QString&);
     void socketDisConn();
     void setSocket();
     void sendMsg(const int&, const QString&, const QString&);
 
 
-private slots:
+  private slots:
     void onDisconnected();
     void ReadMsg();
     void onBytesWitten();
 
-private:
+  private:
     QTcpSocket *tcpSocket;
     bool isConnected;
     bool inWritten;

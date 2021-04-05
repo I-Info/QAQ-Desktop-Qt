@@ -8,24 +8,25 @@
 #include <QListWidgetItem>
 #include "socketservice.h"
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+  public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-signals:
+  signals:
     void startSocket(const QString&,const int&,const QString&);
     void stopSocket();
     void setSocket();
     void sendMsg(const int&,const QString& = "",const QString& = "");
 
-private slots:
+  private slots:
     void on_connectionButton_clicked();
     void on_sendButton_clicked();
     void onGetStatus(const QString&);
@@ -44,7 +45,7 @@ private slots:
 
     void on_groupList_itemDoubleClicked(QListWidgetItem *item);
 
-private:
+  private:
     Ui::MainWindow *ui;
     QMessageBox msgBox;
     QMessageBox aboutBox;

@@ -4,8 +4,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{   
+    , ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
     this->setWindowIcon(QIcon(":/img/logo.png"));//set logo
@@ -48,8 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     serviceThread.quit();
     serviceThread.wait();
     delete statusBar;
@@ -58,8 +56,7 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_connectionButton_clicked()
-{
+void MainWindow::on_connectionButton_clicked() {
     //qDebug()<<"main: "<<QThread::currentThreadId();
     QLineEdit *line1 = ui->serverInfo;
     QLineEdit *line2 = ui->userInfo;
@@ -82,44 +79,37 @@ void MainWindow::on_connectionButton_clicked()
                 } else {
                     errorBox();
                 }
-            }
-            else {
+            } else {
                 errorBox();
             }
-        }
-        else {
+        } else {
             errorBox();
         }
-    }
-    else {
+    } else {
         //disconnect
         emit stopSocket();
 
     }
 }
 
-void MainWindow::onGetStatus(const QString& status)
-{
+void MainWindow::onGetStatus(const QString& status) {
     statusBar->setText(status);
 }
 
-void MainWindow::onConnnected()
-{
+void MainWindow::onConnnected() {
     ui->serverInfo->setEnabled(false);
     ui->userInfo->setEnabled(false);
     ui->connectionButton->setText("disconnect");
     ui->groupList->clear();
 }
 
-void MainWindow::onDisConned()
-{
+void MainWindow::onDisConned() {
     ui->serverInfo->setEnabled(true);
     ui->userInfo->setEnabled(true);
     ui->connectionButton->setText("connect");
 }
 
-void MainWindow::onRecvedMsg(const QString& group, const QString& user, const QString& date, const QString& msg)
-{
+void MainWindow::onRecvedMsg(const QString& group, const QString& user, const QString& date, const QString& msg) {
     /*Get message*/
     if (group == currentGroup) {
         QString temp = "<p><span style='color: blue'>" + user + "</span>@<span style='color: green'>" + date + "</span>:<br> " + msg + "</p>";
@@ -131,8 +121,7 @@ void MainWindow::onRecvedMsg(const QString& group, const QString& user, const QS
     }
 }
 
-void MainWindow::onErrorOccurred(const int& code)
-{
+void MainWindow::onErrorOccurred(const int& code) {
     if (code == 1) {
         //get message error
         errorBox("Network error","Read remote message failed, please cheack your network.");
@@ -148,8 +137,7 @@ void MainWindow::onErrorOccurred(const int& code)
 
 }
 
-void MainWindow::onGetGroupList(const QStringList& groupList)
-{
+void MainWindow::onGetGroupList(const QStringList& groupList) {
     ui->groupList->clear();
     foreach (QString groupName, groupList) {
         QListWidgetItem *item = new QListWidgetItem(groupName);
@@ -157,20 +145,18 @@ void MainWindow::onGetGroupList(const QStringList& groupList)
     }
 }
 
-void MainWindow::onGetHistory(const QString &group, const QStringList &users, const QStringList &dates, const QStringList &msgs)
-{
+void MainWindow::onGetHistory(const QString &group, const QStringList &users, const QStringList &dates, const QStringList &msgs) {
     if (group == currentGroup) {
         ui->textBox->clear();
         int num = users.length();
-        for (int index = 0;index < num; index++) {
+        for (int index = 0; index < num; index++) {
             QString temp = "<p><span style='color: blue'>" + users[index] + "</span>@<span style='color: green'>" + dates[index] + "</span>:<br>" + msgs[index] + "</p>";
             ui->textBox->append(temp);
         }
     }
 }
 
-void MainWindow::errorBox(const QString& title, const QString& text)
-{
+void MainWindow::errorBox(const QString& title, const QString& text) {
     //MainWindow's error message
     msgBox.setWindowTitle(title);
     msgBox.setText(title);
@@ -182,8 +168,7 @@ void MainWindow::errorBox(const QString& title, const QString& text)
 }
 
 
-void MainWindow::on_sendButton_clicked()
-{
+void MainWindow::on_sendButton_clicked() {
     //Send function.
     QString message = ui->lineEdit->text();
     if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
@@ -198,16 +183,14 @@ void MainWindow::on_sendButton_clicked()
         } else {
             errorBox("Error", "the message is too long.");
         }
-    }
-    else if (ui->serverInfo->isEnabled()) {
+    } else if (ui->serverInfo->isEnabled()) {
         errorBox("Error", "Sorry, you can't send message before you connect to remote server");
         ui->lineEdit->setText(NULL);
     }
     return;
 }
 
-void MainWindow::on_action_QAQ_triggered()
-{
+void MainWindow::on_action_QAQ_triggered() {
     //Application about message.
     aboutBox.setWindowTitle("About");
     aboutBox.setText("About");
@@ -219,14 +202,12 @@ void MainWindow::on_action_QAQ_triggered()
 
 }
 
-void MainWindow::on_lineEdit_returnPressed()
-{
+void MainWindow::on_lineEdit_returnPressed() {
     //On 'Enter' key pressed
     on_sendButton_clicked();
 }
 
-void MainWindow::on_getGroup_clicked()
-{
+void MainWindow::on_getGroup_clicked() {
     //Grop list refresh button
     if (!ui->serverInfo->isEnabled()) {
         emit sendMsg(4);
@@ -235,8 +216,7 @@ void MainWindow::on_getGroup_clicked()
     }
 }
 
-void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item)
-{
+void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item) {
     //Double click group name to join a group.
     if (!ui->serverInfo->isEnabled()) {
         currentGroup = item->text();
