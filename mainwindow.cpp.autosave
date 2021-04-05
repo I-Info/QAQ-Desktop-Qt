@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget* parent)
   // new socket
   emit setSocket();
 }
-
+ 
 MainWindow::~MainWindow() {
   serviceThread.quit();
   serviceThread.wait();
@@ -119,10 +119,8 @@ void MainWindow::onDisConned() {
   ui->connectionButton->setText("connect");
 }
 
-void MainWindow::onRecvedMsg(const QString& group,
-                             const QString& user,
-                             const QString& date,
-                             const QString& msg) {
+void MainWindow::onRecvedMsg(const QString& group, const QString& user,
+                             const QString& date, const QString& msg) {
   /*Get message*/
   if (group == currentGroup) {
     QString temp = "<p><span style='color: blue'>" + user +
@@ -165,8 +163,7 @@ void MainWindow::onGetGroupList(const QStringList& groupList) {
   }
 }
 
-void MainWindow::onGetHistory(const QString& group,
-                              const QStringList& users,
+void MainWindow::onGetHistory(const QString& group, const QStringList& users,
                               const QStringList& dates,
                               const QStringList& msgs) {
   if (group == currentGroup) {
