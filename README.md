@@ -1,7 +1,7 @@
 # QAQ
 Private TCP instant message application    
 
-[QAQ-Client(当前仓库)](https://github.com/I_Info/QAQ-Client): 
+[QAQ-Client(当前仓库)](https://github.com/I-Info/QAQ-Client): 
 QAQ项目的客户端。
 
 [QAQ-Server](https://github.com/lixiao189/QAQServer):
