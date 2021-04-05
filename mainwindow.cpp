@@ -240,7 +240,7 @@ void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item)
     //Double click group name to join a group.
     if (!ui->serverInfo->isEnabled()) {
         currentGroup = item->text();
-        item->setForeground(QBrush(Qt::black));
+        item->setForeground(QBrush());
         ui->textBox->clear();
         statusBar->setText("Group: " + currentGroup);
         emit sendMsg(3,currentGroup);
