@@ -11,8 +11,9 @@ QAQ项目服务端。
 本项目使用Qt6 C++开发。
 不保证向下兼容性（Qt5/Qt4）。
 
-## Release
-[v1.0.2](https://github.com/I-Info/QAQ-Client/releases/tag/v1.0.2)    
+## Release   
+<a href="https://github.com/I-Info/QAQ-Client/releases/tag/v1.0.2"><img src="https://img.shields.io/github/v/release/I-Info/QAQ-Client?include_prereleases&style=flat-square"></img></a>    
+- v1.0.2
 
 ## Test Server:
 - 47.110.139.138:8080  
