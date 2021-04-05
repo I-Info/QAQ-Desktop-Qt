@@ -4,13 +4,13 @@
 
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget* parent)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  this->setWindowIcon(QIcon(":/img/logo.png"));  // set logo
+  this->setWindowIcon(QIcon(":/img/logo.png")); // set logo
 
-  ui->splitter->setStretchFactor(0, 1);  // set default size
+  ui->splitter->setStretchFactor(0, 1); // set default size
   ui->splitter->setStretchFactor(1, 2);
 
   ui->textBox->append("<meta charset='UTF-8'>");
@@ -66,8 +66,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::on_connectionButton_clicked() {
   // qDebug()<<"main: "<<QThread::currentThreadId();
-  QLineEdit* line1 = ui->serverInfo;
-  QLineEdit* line2 = ui->userInfo;
+  QLineEdit *line1 = ui->serverInfo;
+  QLineEdit *line2 = ui->userInfo;
   if (line1->isEnabled()) {
     if (line1->text() != "" && line2->text() != "" &&
         line2->text().length() < 10) {
@@ -102,7 +102,7 @@ void MainWindow::on_connectionButton_clicked() {
   }
 }
 
-void MainWindow::onGetStatus(const QString& status) {
+void MainWindow::onGetStatus(const QString &status) {
   statusBar->setText(status);
 }
 
@@ -119,10 +119,8 @@ void MainWindow::onDisConned() {
   ui->connectionButton->setText("connect");
 }
 
-void MainWindow::onRecvedMsg(const QString& group,
-                             const QString& user,
-                             const QString& date,
-                             const QString& msg) {
+void MainWindow::onRecvedMsg(const QString &group, const QString &user,
+                             const QString &date, const QString &msg) {
   /*Get message*/
   if (group == currentGroup) {
     QString temp = "<p><span style='color: blue'>" + user +
@@ -130,14 +128,14 @@ void MainWindow::onRecvedMsg(const QString& group,
                    "</span>:<br> " + msg + "</p>";
     ui->textBox->append(temp);
   } else {
-    QList<QListWidgetItem*> itemList =
+    QList<QListWidgetItem *> itemList =
         ui->groupList->findItems(group, Qt::MatchFixedString);
-    QListWidgetItem* item = itemList.takeFirst();
+    QListWidgetItem *item = itemList.takeFirst();
     item->setForeground(QBrush(Qt::blue));
   }
 }
 
-void MainWindow::onErrorOccurred(const int& code) {
+void MainWindow::onErrorOccurred(const int &code) {
   if (code == 1) {
     // get message error
     errorBox("Network error",
@@ -157,18 +155,17 @@ void MainWindow::onErrorOccurred(const int& code) {
   }
 }
 
-void MainWindow::onGetGroupList(const QStringList& groupList) {
+void MainWindow::onGetGroupList(const QStringList &groupList) {
   ui->groupList->clear();
   foreach (QString groupName, groupList) {
-    QListWidgetItem* item = new QListWidgetItem(groupName);
+    QListWidgetItem *item = new QListWidgetItem(groupName);
     ui->groupList->addItem(item);
   }
 }
 
-void MainWindow::onGetHistory(const QString& group,
-                              const QStringList& users,
-                              const QStringList& dates,
-                              const QStringList& msgs) {
+void MainWindow::onGetHistory(const QString &group, const QStringList &users,
+                              const QStringList &dates,
+                              const QStringList &msgs) {
   if (group == currentGroup) {
     ui->textBox->clear();
     int num = users.length();
@@ -181,7 +178,7 @@ void MainWindow::onGetHistory(const QString& group,
   }
 }
 
-void MainWindow::errorBox(const QString& title, const QString& text) {
+void MainWindow::errorBox(const QString &title, const QString &text) {
   // MainWindow's error message
   msgBox.setWindowTitle(title);
   msgBox.setText(title);
@@ -189,7 +186,7 @@ void MainWindow::errorBox(const QString& title, const QString& text) {
   msgBox.setStandardButtons(QMessageBox::Ok);
   msgBox.setDefaultButton(QMessageBox::Ok);
   msgBox.setIcon(QMessageBox::Critical);
-  msgBox.open();  // void block thread.
+  msgBox.open(); // void block thread.
 }
 
 void MainWindow::on_sendButton_clicked() {
@@ -221,13 +218,12 @@ void MainWindow::on_action_QAQ_triggered() {
   // Application about message.
   aboutBox.setWindowTitle("About");
   aboutBox.setText("About");
-  aboutBox.setInformativeText(
-      "QAQ Client V1.0.2:\nDeveloped by I_Info, Node "
-      "Sans.\nhttps://github.com/I-Info/QAQ-Client");
+  aboutBox.setInformativeText("QAQ Client V1.0.2:\nDeveloped by I_Info, Node "
+                              "Sans.\nhttps://github.com/I-Info/QAQ-Client");
   aboutBox.setStandardButtons(QMessageBox::Ok);
   aboutBox.setDefaultButton(QMessageBox::Ok);
   aboutBox.setIcon(QMessageBox::Information);
-  aboutBox.open();  // void block thread.
+  aboutBox.open(); // void block thread.
 }
 
 void MainWindow::on_lineEdit_returnPressed() {
@@ -244,7 +240,7 @@ void MainWindow::on_getGroup_clicked() {
   }
 }
 
-void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem* item) {
+void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item) {
   // Double click group name to join a group.
   if (!ui->serverInfo->isEnabled()) {
     currentGroup = item->text();
