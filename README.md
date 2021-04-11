@@ -1,20 +1,21 @@
 # QAQ
 Private TCP instant message application    
-
-[QAQ-Client(当前仓库)](https://github.com/I-Info/QAQ-Client): 
+由于QAQ协议更改，此版本客户端暂时无法适配新新协议版本的QAQ-Server  
+--------------------
+[QAQ-Desktop-Qt(当前仓库)](https://github.com/I-Info/QAQ-Desktop-Qt): 
 QAQ项目的客户端。
 
 [QAQ-Server](https://github.com/lixiao189/QAQServer):
 QAQ项目服务端。
 
 # QAQ Client
-<a href="https://github.com/I-Info/QAQ-Client/blob/main/LICENSE"><img src="https://img.shields.io/github/license/I-Info/QAQ-Client?style=flat-square"></img></a>
-<a href="https://github.com/I-Info/QAQ-Client/releases/tag/v1.0.2"><img src="https://img.shields.io/github/v/release/I-Info/QAQ-Client?include_prereleases&style=flat-square"></img></a>   
+<a href="https://github.com/I-Info/QAQ-Desktop-Qt/blob/main/LICENSE"><img src="https://img.shields.io/github/license/I-Info/QAQ-Desktop-Qt?style=flat-square"></img></a>
+<a href="https://github.com/I-Info/QAQ-Desktop-Qt/releases/tag/v1.0.2"><img src="https://img.shields.io/github/v/release/I-Info/QAQ-Desktop-Qt?include_prereleases&style=flat-square"></img></a>   
 本项目使用Qt6 C++开发。
 不保证向下兼容性（Qt5/Qt4）。
 
 ## Release    
-- [v1.0.2](https://github.com/I-Info/QAQ-Client/releases/tag/v1.0.2)
+- [v1.0.2](https://github.com/I-Info/QAQ-Desktop-Qt/releases/tag/v1.0.2)
 
 ## Test Server:
 - 47.110.139.138:8080  
