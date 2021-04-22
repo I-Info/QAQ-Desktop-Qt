@@ -42,6 +42,9 @@ private:
   bool inWritten;
   QString serverIp;
   int serverPort;
+  int groupMode;
+  bool inReading;
+  QString readCache;
 
   void handle(const QString &);
   void waitMSec(unsigned int);

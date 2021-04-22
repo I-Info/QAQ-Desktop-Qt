@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+#include <QDateTime>
 #include <QList>
 
 #include "ui_mainwindow.h"
@@ -69,7 +70,7 @@ void MainWindow::on_connectionButton_clicked() {
   QLineEdit *line1 = ui->serverInfo;
   QLineEdit *line2 = ui->userInfo;
   if (line1->isEnabled()) {
-    if (line1->text() != "" && line2->text() != "" &&
+    if (line1->text() != "" && line2->text().trimmed() != "" &&
         line2->text().length() < 10) {
       QString serverInfo = line1->text().trimmed();
       userName = line2->text().trimmed();
@@ -85,7 +86,7 @@ void MainWindow::on_connectionButton_clicked() {
           serverIp = tempServerIp;
           serverPort = tempServerPort;
           // connect
-          emit startSocket(serverIp, serverPort, userName);
+          emit startSocket(serverIp, serverPort, userName.toUtf8().toBase64());
 
         } else {
           errorBox();
@@ -111,6 +112,8 @@ void MainWindow::onConnnected() {
   ui->userInfo->setEnabled(false);
   ui->connectionButton->setText("disconnect");
   ui->groupList->clear();
+  QListWidgetItem *item = new QListWidgetItem("(default)");
+  ui->groupList->addItem(item);
 }
 
 void MainWindow::onDisConned() {
@@ -131,7 +134,9 @@ void MainWindow::onRecvedMsg(const QString &group, const QString &user,
     QList<QListWidgetItem *> itemList =
         ui->groupList->findItems(group, Qt::MatchFixedString);
     QListWidgetItem *item = itemList.takeFirst();
-    item->setForeground(QBrush(Qt::blue));
+    if (item != nullptr) {
+      item->setForeground(QBrush(Qt::blue));
+    }
   }
 }
 
@@ -157,6 +162,8 @@ void MainWindow::onErrorOccurred(const int &code) {
 
 void MainWindow::onGetGroupList(const QStringList &groupList) {
   ui->groupList->clear();
+  QListWidgetItem *defaultItem = new QListWidgetItem("(default)");
+  ui->groupList->addItem(defaultItem);
   foreach (QString groupName, groupList) {
     QListWidgetItem *item = new QListWidgetItem(groupName);
     ui->groupList->addItem(item);
@@ -191,16 +198,30 @@ void MainWindow::errorBox(const QString &title, const QString &text) {
 
 void MainWindow::on_sendButton_clicked() {
   // Send function.
+  QDateTime currentDateTime = QDateTime::currentDateTime();
   QString message = ui->lineEdit->text();
   if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
     QByteArray base64(message.toUtf8());
     if (base64.toBase64().length() < 90) {
-      if (!currentGroup.isEmpty()) {
-        emit sendMsg(2, currentGroup, base64.toBase64());
-      } else {
+      if (currentGroup.isEmpty()) {
         errorBox("Error",
                  "Sorry, you can't send message before you select a group");
+      } else if (currentGroup != "(default)") {
+        emit sendMsg(2, currentGroup, base64.toBase64());
+        QString temp = "<p><span style='color: blue'>" + userName +
+                       "</span>@<span style='color: green'>" +
+                       currentDateTime.toString("yyyy-MM-dd hh:mm:ss") +
+                       "</span>:<br>" + message + "</p>";
+        ui->textBox->append(temp);
+      } else if (currentGroup == "(default)") {
+        emit sendMsg(6, base64.toBase64());
+        QString temp = "<p><span style='color: blue'>" + userName +
+                       "</span>@<span style='color: green'>" +
+                       currentDateTime.toString("yyyy-MM-dd hh:mm:ss") +
+                       "</span>:<br>" + message + "</p>";
+        ui->textBox->append(temp);
       }
+
       ui->lineEdit->setText("");
     } else {
       errorBox("Error", "the message is too long.");
@@ -247,6 +268,10 @@ void MainWindow::on_groupList_itemDoubleClicked(QListWidgetItem *item) {
     item->setForeground(QBrush());
     ui->textBox->clear();
     statusBar->setText("Group: " + currentGroup);
-    emit sendMsg(3, currentGroup);
+    if (currentGroup != "(default)") {
+      emit sendMsg(3, currentGroup);
+    } else {
+      emit sendMsg(5, NULL); // without group
+    }
   }
 }
