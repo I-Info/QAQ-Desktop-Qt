@@ -202,7 +202,7 @@ void MainWindow::on_sendButton_clicked() {
   QString message = ui->lineEdit->text();
   if (!message.isEmpty() && !ui->serverInfo->isEnabled()) {
     QByteArray base64(message.toUtf8());
-    if (base64.toBase64().length() < 90) {
+    if (base64.toBase64().length() < 500) {
       if (currentGroup.isEmpty()) {
         errorBox("Error",
                  "Sorry, you can't send message before you select a group");
@@ -239,7 +239,7 @@ void MainWindow::on_action_QAQ_triggered() {
   // Application about message.
   aboutBox.setWindowTitle("About");
   aboutBox.setText("About");
-  aboutBox.setInformativeText("QAQ Client V1.1.0:\nDeveloped by I_Info, Node "
+  aboutBox.setInformativeText("QAQ Client V1.1.1:\nDeveloped by I_Info, Node "
                               "Sans.\nhttps://github.com/I-Info/QAQ-Client");
   aboutBox.setStandardButtons(QMessageBox::Ok);
   aboutBox.setDefaultButton(QMessageBox::Ok);

@@ -17,7 +17,7 @@ SocketService::~SocketService() {
 void SocketService::setSocket() {
   // qDebug()<<"set: "<<QThread::currentThreadId();
   tcpSocket = new QTcpSocket();
-  tcpSocket->setReadBufferSize(9480); // read buffer
+  tcpSocket->setReadBufferSize(1024 * 16); // read buffer
   // isConnected = false;
   // Link
   connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
