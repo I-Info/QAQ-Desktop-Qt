@@ -69,28 +69,24 @@ void MainWindow::on_connectionButton_clicked() {
   // qDebug()<<"main: "<<QThread::currentThreadId();
   QLineEdit *line1 = ui->serverInfo;
   QLineEdit *line2 = ui->userInfo;
+  QLineEdit *line3 = ui->serverPort;
   if (line1->isEnabled()) {
-    if (line1->text() != "" && line2->text().trimmed() != "" &&
-        line2->text().length() < 10) {
-      QString serverInfo = line1->text().trimmed();
-      userName = line2->text().trimmed();
-      int sIndex = serverInfo.lastIndexOf(':');
-      if (sIndex != -1) {
-        QString tempServerIp = serverInfo.mid(0, sIndex);
-        int tempServerPort = serverInfo.mid(sIndex + 1).toInt();
-        QRegularExpression regExp(
-            "\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2["
-            "0-4][0-9]|[01]?[0-9][0-9]?)\\b");
-        QRegularExpressionMatch match = regExp.match(tempServerIp);
-        if (match.hasMatch() && tempServerPort > 0 && tempServerPort <= 65535) {
-          serverIp = tempServerIp;
-          serverPort = tempServerPort;
-          // connect
-          emit startSocket(serverIp, serverPort, userName.toUtf8().toBase64());
+    QString tempHostName = line1->text().trimmed();
+    QString tempUsername = line2->text().trimmed();
+    int tempServerPort = line3->text().toInt();
+    if (tempHostName != "" && tempUsername != "" &&
+        tempUsername.length() < 10 && tempServerPort > 0 &&
+        tempServerPort <= 65535) {
 
-        } else {
-          errorBox();
-        }
+      QRegularExpression regExp("^[\\w-]+(\\.[\\w-]+)+");
+      QRegularExpressionMatch match = regExp.match(tempHostName);
+      if (match.hasMatch()) {
+        username = tempUsername;
+        hostName = tempHostName;
+        serverPort = tempServerPort;
+        // connect
+        emit startSocket(hostName, serverPort, username.toUtf8().toBase64());
+
       } else {
         errorBox();
       }
@@ -109,6 +105,7 @@ void MainWindow::onGetStatus(const QString &status) {
 
 void MainWindow::onConnnected() {
   ui->serverInfo->setEnabled(false);
+  ui->serverPort->setEnabled(false);
   ui->userInfo->setEnabled(false);
   ui->connectionButton->setText("disconnect");
   ui->groupList->clear();
@@ -118,6 +115,7 @@ void MainWindow::onConnnected() {
 
 void MainWindow::onDisConned() {
   ui->serverInfo->setEnabled(true);
+  ui->serverPort->setEnabled(true);
   ui->userInfo->setEnabled(true);
   ui->connectionButton->setText("connect");
 }
@@ -208,14 +206,14 @@ void MainWindow::on_sendButton_clicked() {
                  "Sorry, you can't send message before you select a group");
       } else if (currentGroup != "(default)") {
         emit sendMsg(2, currentGroup, base64.toBase64());
-        QString temp = "<p><span style='color: blue'>" + userName +
+        QString temp = "<p><span style='color: blue'>" + username +
                        "</span>@<span style='color: green'>" +
                        currentDateTime.toString("yyyy-MM-dd hh:mm:ss") +
                        "</span>:<br>" + message + "</p>";
         ui->textBox->append(temp);
       } else if (currentGroup == "(default)") {
         emit sendMsg(6, base64.toBase64());
-        QString temp = "<p><span style='color: blue'>" + userName +
+        QString temp = "<p><span style='color: blue'>" + username +
                        "</span>@<span style='color: green'>" +
                        currentDateTime.toString("yyyy-MM-dd hh:mm:ss") +
                        "</span>:<br>" + message + "</p>";
@@ -239,7 +237,7 @@ void MainWindow::on_action_QAQ_triggered() {
   // Application about message.
   aboutBox.setWindowTitle("About");
   aboutBox.setText("About");
-  aboutBox.setInformativeText("QAQ Client V1.1.1:\nDeveloped by I_Info, Node "
+  aboutBox.setInformativeText("QAQ Client V1.1.2:\nDeveloped by I_Info, Node "
                               "Sans.\nhttps://github.com/I-Info/QAQ-Client");
   aboutBox.setStandardButtons(QMessageBox::Ok);
   aboutBox.setDefaultButton(QMessageBox::Ok);

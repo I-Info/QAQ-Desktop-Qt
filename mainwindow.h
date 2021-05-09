@@ -51,9 +51,9 @@ private:
   Ui::MainWindow *ui;
   QMessageBox msgBox;
   QMessageBox aboutBox;
-  QString serverIp;
+  QString hostName;
   qint16 serverPort;
-  QString userName;
+  QString username;
   QString currentGroup;
   SocketService *mainService;
   QThread serviceThread;
